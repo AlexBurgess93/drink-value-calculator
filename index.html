@@ -22,7 +22,6 @@
       --muted: #6b7280;
       --line: #d1d5db;
       --accent: #0f766e;
-      --accent-soft: #ccfbf1;
       --input: #dbeafe;
       --win: #dcfce7;
       --lose: #fee2e2;
@@ -223,6 +222,7 @@
       color: #991b1b;
       font-weight: 700;
       margin-top: 10px;
+      min-height: 1.2em;
     }
 
     .note {
@@ -472,7 +472,7 @@
       const gramsAlcohol = volume * (abv / 100) * 0.789;
       const standardDrinks = gramsAlcohol / 10;
       const standardDrinksPerDollar = standardDrinks / price;
-      return { gramsAlcohol, standardDrinks, standardDrinksPerDollar };
+      return { standardDrinks, standardDrinksPerDollar };
     }
 
     function saveFields() {
@@ -529,6 +529,19 @@
     function compareDrinks(shouldFlash = true) {
       resetStyles();
 
+      const values = Object.values(fields).map(input => input.value.trim());
+      const filledCount = values.filter(v => v !== '').length;
+
+      if (filledCount === 0) {
+        resetResultText();
+        return;
+      }
+
+      if (filledCount < 6) {
+        resetResultText(`Enter ${6 - filledCount} more value${6 - filledCount === 1 ? '' : 's'} to compare.`);
+        return;
+      }
+
       const volume1 = num(fields.volume1.value);
       const abv1 = num(fields.abv1.value);
       const price1 = num(fields.price1.value);
@@ -537,19 +550,10 @@
       const price2 = num(fields.price2.value);
 
       const allValues = [volume1, abv1, price1, volume2, abv2, price2];
-      const hasBlank = Object.values(fields).some(input => input.value === '');
-      const hasAnyValue = Object.values(fields).some(input => input.value !== '');
-      const hasBadValue = allValues.some(v => Number.isNaN(v) || v < 0) || (fields.price1.value !== '' && price1 <= 0) || (fields.price2.value !== '' && price2 <= 0);
-
-      if (!hasAnyValue) {
-        resetResultText();
-        return;
-      }
-
-      if (hasBlank) {
-        resetResultText('Enter all 6 values first.');
-        return;
-      }
+      const hasBadValue =
+        allValues.some(v => Number.isNaN(v) || v < 0) ||
+        price1 <= 0 ||
+        price2 <= 0;
 
       if (hasBadValue) {
         summary.textContent = 'Fix the inputs.';
@@ -624,6 +628,11 @@
         compareDrinks(false);
       });
 
+      input.addEventListener('change', () => {
+        saveFields();
+        compareDrinks(false);
+      });
+
       input.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
           event.preventDefault();
@@ -639,10 +648,7 @@
 
     loadSavedFields();
     registerServiceWorker();
-
-    if (Object.values(fields).some(input => input.value !== '')) {
-      compareDrinks(false);
-    }
+    compareDrinks(false);
   </script>
 </body>
 </html>
