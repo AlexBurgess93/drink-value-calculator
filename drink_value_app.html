@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drink Value Calculator</title>
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --ink: #111827;
+      --muted: #6b7280;
+      --line: #d1d5db;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+      --input: #dbeafe;
+      --win: #dcfce7;
+      --lose: #fee2e2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding: 24px;
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+    p.lead {
+      margin: 0 0 24px;
+      color: var(--muted);
+      font-size: 16px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 14px;
+      font-size: 22px;
+    }
+    label {
+      display: block;
+      font-weight: 700;
+      margin: 12px 0 6px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #93c5fd;
+      background: var(--input);
+      font-size: 16px;
+    }
+    .buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .primary {
+      background: var(--accent);
+      color: white;
+    }
+    .secondary {
+      background: #e5e7eb;
+      color: var(--ink);
+    }
+    .result {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .result h2 {
+      margin-top: 0;
+    }
+    .summary {
+      margin: 10px 0 16px;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .stat {
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+    }
+    .stat.win { background: var(--win); }
+    .stat.lose { background: var(--lose); }
+    .stat strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 18px;
+    }
+    .formula {
+      margin-top: 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .warning {
+      color: #991b1b;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+    code {
+      background: #f3f4f6;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Drink Value Calculator</h1>
+    <p class="lead">Compare two drinks and see which gives more pure alcohol per dollar.</p>
+
+    <div class="grid">
+      <div class="card" id="card1">
+        <h2>Drink 1</h2>
+        <label for="volume1">Volume (ml)</label>
+        <input id="volume1" type="number" min="0" step="0.1" placeholder="375" />
+
+        <label for="abv1">Alcohol %</label>
+        <input id="abv1" type="number" min="0" step="0.1" placeholder="4.5" />
+
+        <label for="price1">Price ($)</label>
+        <input id="price1" type="number" min="0" step="0.01" placeholder="6.00" />
+      </div>
+
+      <div class="card" id="card2">
+        <h2>Drink 2</h2>
+        <label for="volume2">Volume (ml)</label>
+        <input id="volume2" type="number" min="0" step="0.1" placeholder="330" />
+
+        <label for="abv2">Alcohol %</label>
+        <input id="abv2" type="number" min="0" step="0.1" placeholder="7" />
+
+        <label for="price2">Price ($)</label>
+        <input id="price2" type="number" min="0" step="0.01" placeholder="8.00" />
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="primary" id="compareBtn">Compare</button>
+      <button class="secondary" id="exampleBtn">Load example</button>
+      <button class="secondary" id="clearBtn">Clear</button>
+    </div>
+
+    <div class="result">
+      <h2>Result</h2>
+      <div class="summary" id="summary">Enter both drinks and click Compare.</div>
+      <div id="warning" class="warning"></div>
+
+      <div class="stats">
+        <div class="stat" id="stat1">
+          <strong>Drink 1</strong>
+          <div id="drink1Pure">Pure alcohol: -</div>
+          <div id="drink1Value">Alcohol per $: -</div>
+        </div>
+        <div class="stat" id="stat2">
+          <strong>Drink 2</strong>
+          <div id="drink2Pure">Pure alcohol: -</div>
+          <div id="drink2Value">Alcohol per $: -</div>
+        </div>
+      </div>
+
+      <div class="formula">
+        <div><strong>Formula:</strong></div>
+        <div><code>Pure alcohol = Volume × (Alcohol % ÷ 100)</code></div>
+        <div><code>Alcohol per $ = Pure alcohol ÷ Price</code></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fields = {
+      volume1: document.getElementById('volume1'),
+      abv1: document.getElementById('abv1'),
+      price1: document.getElementById('price1'),
+      volume2: document.getElementById('volume2'),
+      abv2: document.getElementById('abv2'),
+      price2: document.getElementById('price2'),
+    };
+
+    const summary = document.getElementById('summary');
+    const warning = document.getElementById('warning');
+    const stat1 = document.getElementById('stat1');
+    const stat2 = document.getElementById('stat2');
+    const drink1Pure = document.getElementById('drink1Pure');
+    const drink1Value = document.getElementById('drink1Value');
+    const drink2Pure = document.getElementById('drink2Pure');
+    const drink2Value = document.getElementById('drink2Value');
+
+    function num(value) {
+      return Number(value);
+    }
+
+    function formatNumber(value, decimals = 2) {
+      return Number(value).toFixed(decimals);
+    }
+
+    function resetStyles() {
+      stat1.className = 'stat';
+      stat2.className = 'stat';
+      warning.textContent = '';
+    }
+
+    function calculateDrink(volume, abv, price) {
+      const pureAlcohol = volume * (abv / 100);
+      const alcoholPerDollar = pureAlcohol / price;
+      return { pureAlcohol, alcoholPerDollar };
+    }
+
+    function compareDrinks() {
+      resetStyles();
+
+      const volume1 = num(fields.volume1.value);
+      const abv1 = num(fields.abv1.value);
+      const price1 = num(fields.price1.value);
+      const volume2 = num(fields.volume2.value);
+      const abv2 = num(fields.abv2.value);
+      const price2 = num(fields.price2.value);
+
+      const allValues = [volume1, abv1, price1, volume2, abv2, price2];
+      const hasBlank = Object.values(fields).some(input => input.value === '');
+      const hasBadValue = allValues.some(v => Number.isNaN(v) || v < 0) || price1 <= 0 || price2 <= 0;
+
+      if (hasBlank) {
+        summary.textContent = 'Enter all 6 values first.';
+        drink1Pure.textContent = 'Pure alcohol: -';
+        drink1Value.textContent = 'Alcohol per $: -';
+        drink2Pure.textContent = 'Pure alcohol: -';
+        drink2Value.textContent = 'Alcohol per $: -';
+        return;
+      }
+
+      if (hasBadValue) {
+        summary.textContent = 'Fix the inputs.';
+        warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
+        return;
+      }
+
+      const d1 = calculateDrink(volume1, abv1, price1);
+      const d2 = calculateDrink(volume2, abv2, price2);
+
+      drink1Pure.textContent = `Pure alcohol: ${formatNumber(d1.pureAlcohol, 1)} ml`;
+      drink1Value.textContent = `Alcohol per $: ${formatNumber(d1.alcoholPerDollar, 2)} ml`;
+      drink2Pure.textContent = `Pure alcohol: ${formatNumber(d2.pureAlcohol, 1)} ml`;
+      drink2Value.textContent = `Alcohol per $: ${formatNumber(d2.alcoholPerDollar, 2)} ml`;
+
+      if (d1.alcoholPerDollar > d2.alcoholPerDollar) {
+        summary.textContent = `Drink 1 is better value. It gives ${formatNumber(d1.alcoholPerDollar - d2.alcoholPerDollar, 2)} more ml of alcohol per dollar.`;
+        stat1.classList.add('win');
+        stat2.classList.add('lose');
+      } else if (d2.alcoholPerDollar > d1.alcoholPerDollar) {
+        summary.textContent = `Drink 2 is better value. It gives ${formatNumber(d2.alcoholPerDollar - d1.alcoholPerDollar, 2)} more ml of alcohol per dollar.`;
+        stat2.classList.add('win');
+        stat1.classList.add('lose');
+      } else {
+        summary.textContent = 'It is a tie. Both drinks give the same alcohol per dollar.';
+      }
+    }
+
+    function loadExample() {
+      fields.volume1.value = 375;
+      fields.abv1.value = 4.5;
+      fields.price1.value = 6;
+      fields.volume2.value = 330;
+      fields.abv2.value = 7;
+      fields.price2.value = 8;
+      compareDrinks();
+    }
+
+    function clearAll() {
+      Object.values(fields).forEach(input => input.value = '');
+      resetStyles();
+      summary.textContent = 'Enter both drinks and click Compare.';
+      drink1Pure.textContent = 'Pure alcohol: -';
+      drink1Value.textContent = 'Alcohol per $: -';
+      drink2Pure.textContent = 'Pure alcohol: -';
+      drink2Value.textContent = 'Alcohol per $: -';
+    }
+
+    document.getElementById('compareBtn').addEventListener('click', compareDrinks);
+    document.getElementById('exampleBtn').addEventListener('click', loadExample);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
+    Object.values(fields).forEach(input => input.addEventListener('keydown', event => {
+      if (event.key === 'Enter') compareDrinks();
+    }));
+  </script>
+</body>
+</html>
