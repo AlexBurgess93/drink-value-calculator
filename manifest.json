@@ -1,0 +1,22 @@
+{
+  "name": "Drink Value Calculator",
+  "short_name": "Drink Value",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f4f6",
+  "theme_color": "#0f766e",
+  "description": "Compare drinks by Australian standard drinks per dollar.",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
