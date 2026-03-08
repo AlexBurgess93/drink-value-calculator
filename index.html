@@ -422,9 +422,9 @@
     </div>
 
     <div class="buttons">
-      <button class="primary" id="compareBtn">Compare</button>
-      <!--<button class="secondary" id="exampleBtn">Load example</button>-->
-      <button class="secondary" id="clearBtn">Clear</button>
+      <button class="primary" id="compareBtn" type="button">Compare</button>
+      <!--<button class="secondary" id="exampleBtn" type="button">Load example</button>-->
+      <button class="secondary" id="clearBtn" type="button">Clear</button>
     </div>
 
     <div class="result" id="resultBox">
@@ -685,11 +685,21 @@
     }
 
     function clearAll() {
-      Object.values(fields).forEach(input => input.value = '');
+      Object.values(fields).forEach(input => {
+        input.value = '';
+      });
+
       clearSavedFields();
       resetStyles();
       resetDrinkOutputs();
+
       summary.textContent = 'Enter drink details to begin.';
+      warning.textContent = '';
+
+      if (document.activeElement && typeof document.activeElement.blur === 'function') {
+        document.activeElement.blur();
+      }
+
       flashResult();
     }
 
