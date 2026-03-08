@@ -117,7 +117,6 @@
       background: #eef6ff;
     }
 
-    /* Remove spinners */
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
       -webkit-appearance: none;
@@ -157,6 +156,7 @@
     .primary {
       background: var(--accent);
       color: white;
+      font-weight: 700;
     }
 
     .secondary {
@@ -274,20 +274,11 @@
       }
 
       .buttons {
-        position: sticky;
-        bottom: 0;
-        z-index: 20;
-        background: linear-gradient(to top, var(--bg) 75%, rgba(243,244,246,0));
-        padding-top: 12px;
-        padding-bottom: max(12px, env(safe-area-inset-bottom));
+        flex-direction: column;
       }
 
       .buttons button {
-        flex: 1 1 100%;
-      }
-
-      .primary {
-        font-weight: 700;
+        width: 100%;
       }
     }
   </style>
@@ -519,13 +510,23 @@
       const nextInput = fieldOrder[currentIndex + 1];
       if (nextInput) {
         nextInput.focus();
-        nextInput.select?.();
+        if (typeof nextInput.select === 'function') {
+          nextInput.select();
+        }
       } else {
         document.getElementById('compareBtn').focus();
       }
     }
 
-    function compareDrinks() {
+    function resetResultText(message = 'Enter both drinks and click Compare.') {
+      summary.textContent = message;
+      drink1Std.textContent = 'Standard drinks: -';
+      drink1Value.textContent = 'Standard drinks per $: -';
+      drink2Std.textContent = 'Standard drinks: -';
+      drink2Value.textContent = 'Standard drinks per $: -';
+    }
+
+    function compareDrinks(shouldFlash = true) {
       resetStyles();
 
       const volume1 = num(fields.volume1.value);
@@ -537,15 +538,16 @@
 
       const allValues = [volume1, abv1, price1, volume2, abv2, price2];
       const hasBlank = Object.values(fields).some(input => input.value === '');
-      const hasBadValue = allValues.some(v => Number.isNaN(v) || v < 0) || price1 <= 0 || price2 <= 0;
+      const hasAnyValue = Object.values(fields).some(input => input.value !== '');
+      const hasBadValue = allValues.some(v => Number.isNaN(v) || v < 0) || (fields.price1.value !== '' && price1 <= 0) || (fields.price2.value !== '' && price2 <= 0);
+
+      if (!hasAnyValue) {
+        resetResultText();
+        return;
+      }
 
       if (hasBlank) {
-        summary.textContent = 'Enter all 6 values first.';
-        drink1Std.textContent = 'Standard drinks: -';
-        drink1Value.textContent = 'Standard drinks per $: -';
-        drink2Std.textContent = 'Standard drinks: -';
-        drink2Value.textContent = 'Standard drinks per $: -';
-        flashResult();
+        resetResultText('Enter all 6 values first.');
         return;
       }
 
@@ -556,7 +558,7 @@
         drink1Value.textContent = 'Standard drinks per $: -';
         drink2Std.textContent = 'Standard drinks: -';
         drink2Value.textContent = 'Standard drinks per $: -';
-        flashResult();
+        if (shouldFlash) flashResult();
         return;
       }
 
@@ -580,7 +582,7 @@
         summary.textContent = 'It is a tie. Both drinks give the same standard drinks per dollar.';
       }
 
-      flashResult();
+      if (shouldFlash) flashResult();
     }
 
     function loadExample() {
@@ -591,18 +593,14 @@
       fields.abv2.value = '7';
       fields.price2.value = '8';
       saveFields();
-      compareDrinks();
+      compareDrinks(true);
     }
 
     function clearAll() {
       Object.values(fields).forEach(input => input.value = '');
       clearSavedFields();
       resetStyles();
-      summary.textContent = 'Enter both drinks and click Compare.';
-      drink1Std.textContent = 'Standard drinks: -';
-      drink1Value.textContent = 'Standard drinks per $: -';
-      drink2Std.textContent = 'Standard drinks: -';
-      drink2Value.textContent = 'Standard drinks per $: -';
+      resetResultText();
       flashResult();
     }
 
@@ -616,19 +614,22 @@
       }
     }
 
-    document.getElementById('compareBtn').addEventListener('click', compareDrinks);
+    document.getElementById('compareBtn').addEventListener('click', () => compareDrinks(true));
     document.getElementById('exampleBtn').addEventListener('click', loadExample);
     document.getElementById('clearBtn').addEventListener('click', clearAll);
 
     Object.values(fields).forEach(input => {
-      input.addEventListener('input', saveFields);
+      input.addEventListener('input', () => {
+        saveFields();
+        compareDrinks(false);
+      });
 
       input.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
           event.preventDefault();
 
           if (input === fields.price2) {
-            compareDrinks();
+            compareDrinks(true);
           } else {
             focusNextField(input);
           }
@@ -640,7 +641,7 @@
     registerServiceWorker();
 
     if (Object.values(fields).some(input => input.value !== '')) {
-      compareDrinks();
+      compareDrinks(false);
     }
   </script>
 </body>
