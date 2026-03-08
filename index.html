@@ -384,13 +384,13 @@
 
     <div class="buttons">
       <button class="primary" id="compareBtn">Compare</button>
-      <!--<button class="secondary" id="exampleBtn">Load example</button>-->
+      <button class="secondary" id="exampleBtn">Load example</button>
       <button class="secondary" id="clearBtn">Clear</button>
     </div>
 
     <div class="result" id="resultBox">
       <h2>Result</h2>
-      <div class="summary" id="summary">Enter both drinks and click Compare.</div>
+      <div class="summary" id="summary">Enter drink details to begin.</div>
       <div id="warning" class="warning"></div>
 
       <div class="stats">
@@ -475,6 +475,38 @@
       return { standardDrinks, standardDrinksPerDollar };
     }
 
+    function isDrinkComplete(volume, abv, price) {
+      return volume !== '' && abv !== '' && price !== '';
+    }
+
+    function validateDrink(volume, abv, price) {
+      const volumeNum = num(volume);
+      const abvNum = num(abv);
+      const priceNum = num(price);
+
+      const invalid =
+        Number.isNaN(volumeNum) ||
+        Number.isNaN(abvNum) ||
+        Number.isNaN(priceNum) ||
+        volumeNum < 0 ||
+        abvNum < 0 ||
+        priceNum <= 0;
+
+      return {
+        valid: !invalid,
+        volume: volumeNum,
+        abv: abvNum,
+        price: priceNum
+      };
+    }
+
+    function resetDrinkOutputs() {
+      drink1Std.textContent = 'Standard drinks: -';
+      drink1Value.textContent = 'Standard drinks per $: -';
+      drink2Std.textContent = 'Standard drinks: -';
+      drink2Value.textContent = 'Standard drinks per $: -';
+    }
+
     function saveFields() {
       const data = {};
       Object.entries(fields).forEach(([key, input]) => {
@@ -518,61 +550,74 @@
       }
     }
 
-    function resetResultText(message = 'Enter both drinks and click Compare.') {
-      summary.textContent = message;
-      drink1Std.textContent = 'Standard drinks: -';
-      drink1Value.textContent = 'Standard drinks per $: -';
-      drink2Std.textContent = 'Standard drinks: -';
-      drink2Value.textContent = 'Standard drinks per $: -';
-    }
-
-    function compareDrinks(shouldFlash = true) {
+    function updateCalculator(shouldFlash = false) {
       resetStyles();
+      resetDrinkOutputs();
 
-      const values = Object.values(fields).map(input => input.value.trim());
-      const filledCount = values.filter(v => v !== '').length;
+      const v1Raw = fields.volume1.value.trim();
+      const a1Raw = fields.abv1.value.trim();
+      const p1Raw = fields.price1.value.trim();
+      const v2Raw = fields.volume2.value.trim();
+      const a2Raw = fields.abv2.value.trim();
+      const p2Raw = fields.price2.value.trim();
 
-      if (filledCount === 0) {
-        resetResultText();
+      const anyValue = [v1Raw, a1Raw, p1Raw, v2Raw, a2Raw, p2Raw].some(v => v !== '');
+      const drink1Complete = isDrinkComplete(v1Raw, a1Raw, p1Raw);
+      const drink2Complete = isDrinkComplete(v2Raw, a2Raw, p2Raw);
+
+      let d1 = null;
+      let d2 = null;
+
+      if (!anyValue) {
+        summary.textContent = 'Enter drink details to begin.';
         return;
       }
 
-      if (filledCount < 6) {
-        resetResultText(`Enter ${6 - filledCount} more value${6 - filledCount === 1 ? '' : 's'} to compare.`);
+      if (drink1Complete) {
+        const result1 = validateDrink(v1Raw, a1Raw, p1Raw);
+
+        if (!result1.valid) {
+          summary.textContent = 'Fix Drink 1 inputs.';
+          warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
+          if (shouldFlash) flashResult();
+          return;
+        }
+
+        d1 = calculateDrink(result1.volume, result1.abv, result1.price);
+        drink1Std.textContent = `Standard drinks: ${formatNumber(d1.standardDrinks, 2)}`;
+        drink1Value.textContent = `Standard drinks per $: ${formatNumber(d1.standardDrinksPerDollar, 2)}`;
+      }
+
+      if (drink2Complete) {
+        const result2 = validateDrink(v2Raw, a2Raw, p2Raw);
+
+        if (!result2.valid) {
+          summary.textContent = 'Fix Drink 2 inputs.';
+          warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
+          if (shouldFlash) flashResult();
+          return;
+        }
+
+        d2 = calculateDrink(result2.volume, result2.abv, result2.price);
+        drink2Std.textContent = `Standard drinks: ${formatNumber(d2.standardDrinks, 2)}`;
+        drink2Value.textContent = `Standard drinks per $: ${formatNumber(d2.standardDrinksPerDollar, 2)}`;
+      }
+
+      if (drink1Complete && !drink2Complete) {
+        summary.textContent = 'Drink 1 calculated. Finish Drink 2 to compare.';
         return;
       }
 
-      const volume1 = num(fields.volume1.value);
-      const abv1 = num(fields.abv1.value);
-      const price1 = num(fields.price1.value);
-      const volume2 = num(fields.volume2.value);
-      const abv2 = num(fields.abv2.value);
-      const price2 = num(fields.price2.value);
-
-      const allValues = [volume1, abv1, price1, volume2, abv2, price2];
-      const hasBadValue =
-        allValues.some(v => Number.isNaN(v) || v < 0) ||
-        price1 <= 0 ||
-        price2 <= 0;
-
-      if (hasBadValue) {
-        summary.textContent = 'Fix the inputs.';
-        warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
-        drink1Std.textContent = 'Standard drinks: -';
-        drink1Value.textContent = 'Standard drinks per $: -';
-        drink2Std.textContent = 'Standard drinks: -';
-        drink2Value.textContent = 'Standard drinks per $: -';
-        if (shouldFlash) flashResult();
+      if (!drink1Complete && drink2Complete) {
+        summary.textContent = 'Drink 2 calculated. Finish Drink 1 to compare.';
         return;
       }
 
-      const d1 = calculateDrink(volume1, abv1, price1);
-      const d2 = calculateDrink(volume2, abv2, price2);
-
-      drink1Std.textContent = `Standard drinks: ${formatNumber(d1.standardDrinks, 2)}`;
-      drink1Value.textContent = `Standard drinks per $: ${formatNumber(d1.standardDrinksPerDollar, 2)}`;
-      drink2Std.textContent = `Standard drinks: ${formatNumber(d2.standardDrinks, 2)}`;
-      drink2Value.textContent = `Standard drinks per $: ${formatNumber(d2.standardDrinksPerDollar, 2)}`;
+      if (!drink1Complete && !drink2Complete) {
+        const filledCount = [v1Raw, a1Raw, p1Raw, v2Raw, a2Raw, p2Raw].filter(v => v !== '').length;
+        summary.textContent = `Enter ${6 - filledCount} more value${6 - filledCount === 1 ? '' : 's'} to compare.`;
+        return;
+      }
 
       if (d1.standardDrinksPerDollar > d2.standardDrinksPerDollar) {
         summary.textContent = `Drink 1 is better value. It gives ${formatNumber(d1.standardDrinksPerDollar - d2.standardDrinksPerDollar, 2)} more standard drinks per dollar.`;
@@ -597,14 +642,15 @@
       fields.abv2.value = '7';
       fields.price2.value = '8';
       saveFields();
-      compareDrinks(true);
+      updateCalculator(true);
     }
 
     function clearAll() {
       Object.values(fields).forEach(input => input.value = '');
       clearSavedFields();
       resetStyles();
-      resetResultText();
+      resetDrinkOutputs();
+      summary.textContent = 'Enter drink details to begin.';
       flashResult();
     }
 
@@ -618,19 +664,19 @@
       }
     }
 
-    document.getElementById('compareBtn').addEventListener('click', () => compareDrinks(true));
+    document.getElementById('compareBtn').addEventListener('click', () => updateCalculator(true));
     document.getElementById('exampleBtn').addEventListener('click', loadExample);
     document.getElementById('clearBtn').addEventListener('click', clearAll);
 
     Object.values(fields).forEach(input => {
       input.addEventListener('input', () => {
         saveFields();
-        compareDrinks(false);
+        updateCalculator(false);
       });
 
       input.addEventListener('change', () => {
         saveFields();
-        compareDrinks(false);
+        updateCalculator(false);
       });
 
       input.addEventListener('keydown', event => {
@@ -638,7 +684,7 @@
           event.preventDefault();
 
           if (input === fields.price2) {
-            compareDrinks(true);
+            updateCalculator(true);
           } else {
             focusNextField(input);
           }
@@ -648,7 +694,7 @@
 
     loadSavedFields();
     registerServiceWorker();
-    compareDrinks(false);
+    updateCalculator(false);
   </script>
 </body>
 </html>
