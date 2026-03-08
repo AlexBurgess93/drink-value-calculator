@@ -143,7 +143,7 @@
 <body>
   <div class="wrap">
     <h1>Drink Value Calculator</h1>
-    <p class="lead">Compare two drinks and see which gives more pure alcohol per dollar.</p>
+    <p class="lead">Compare two drinks and see which gives more Australian standard drinks per dollar.</p>
 
     <div class="grid">
       <div class="card" id="card1">
@@ -185,20 +185,21 @@
       <div class="stats">
         <div class="stat" id="stat1">
           <strong>Drink 1</strong>
-          <div id="drink1Pure">Pure alcohol: -</div>
-          <div id="drink1Value">Alcohol per $: -</div>
+          <div id="drink1Std">Standard drinks: -</div>
+          <div id="drink1Value">Standard drinks per $: -</div>
         </div>
         <div class="stat" id="stat2">
           <strong>Drink 2</strong>
-          <div id="drink2Pure">Pure alcohol: -</div>
-          <div id="drink2Value">Alcohol per $: -</div>
+          <div id="drink2Std">Standard drinks: -</div>
+          <div id="drink2Value">Standard drinks per $: -</div>
         </div>
       </div>
 
       <div class="formula">
         <div><strong>Formula:</strong></div>
-        <div><code>Pure alcohol = Volume × (Alcohol % ÷ 100)</code></div>
-        <div><code>Alcohol per $ = Pure alcohol ÷ Price</code></div>
+        <div><code>Grams of alcohol = Volume × (Alcohol % ÷ 100) × 0.789</code></div>
+        <div><code>Standard drinks = Grams of alcohol ÷ 10</code></div>
+        <div><code>Standard drinks per $ = Standard drinks ÷ Price</code></div>
       </div>
     </div>
   </div>
@@ -217,9 +218,9 @@
     const warning = document.getElementById('warning');
     const stat1 = document.getElementById('stat1');
     const stat2 = document.getElementById('stat2');
-    const drink1Pure = document.getElementById('drink1Pure');
+    const drink1Std = document.getElementById('drink1Std');
     const drink1Value = document.getElementById('drink1Value');
-    const drink2Pure = document.getElementById('drink2Pure');
+    const drink2Std = document.getElementById('drink2Std');
     const drink2Value = document.getElementById('drink2Value');
 
     function num(value) {
@@ -237,9 +238,10 @@
     }
 
     function calculateDrink(volume, abv, price) {
-      const pureAlcohol = volume * (abv / 100);
-      const alcoholPerDollar = pureAlcohol / price;
-      return { pureAlcohol, alcoholPerDollar };
+      const gramsAlcohol = volume * (abv / 100) * 0.789;
+      const standardDrinks = gramsAlcohol / 10;
+      const standardDrinksPerDollar = standardDrinks / price;
+      return { gramsAlcohol, standardDrinks, standardDrinksPerDollar };
     }
 
     function compareDrinks() {
@@ -258,37 +260,41 @@
 
       if (hasBlank) {
         summary.textContent = 'Enter all 6 values first.';
-        drink1Pure.textContent = 'Pure alcohol: -';
-        drink1Value.textContent = 'Alcohol per $: -';
-        drink2Pure.textContent = 'Pure alcohol: -';
-        drink2Value.textContent = 'Alcohol per $: -';
+        drink1Std.textContent = 'Standard drinks: -';
+        drink1Value.textContent = 'Standard drinks per $: -';
+        drink2Std.textContent = 'Standard drinks: -';
+        drink2Value.textContent = 'Standard drinks per $: -';
         return;
       }
 
       if (hasBadValue) {
         summary.textContent = 'Fix the inputs.';
         warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
+        drink1Std.textContent = 'Standard drinks: -';
+        drink1Value.textContent = 'Standard drinks per $: -';
+        drink2Std.textContent = 'Standard drinks: -';
+        drink2Value.textContent = 'Standard drinks per $: -';
         return;
       }
 
       const d1 = calculateDrink(volume1, abv1, price1);
       const d2 = calculateDrink(volume2, abv2, price2);
 
-      drink1Pure.textContent = `Pure alcohol: ${formatNumber(d1.pureAlcohol, 1)} ml`;
-      drink1Value.textContent = `Alcohol per $: ${formatNumber(d1.alcoholPerDollar, 2)} ml`;
-      drink2Pure.textContent = `Pure alcohol: ${formatNumber(d2.pureAlcohol, 1)} ml`;
-      drink2Value.textContent = `Alcohol per $: ${formatNumber(d2.alcoholPerDollar, 2)} ml`;
+      drink1Std.textContent = `Standard drinks: ${formatNumber(d1.standardDrinks, 2)}`;
+      drink1Value.textContent = `Standard drinks per $: ${formatNumber(d1.standardDrinksPerDollar, 2)}`;
+      drink2Std.textContent = `Standard drinks: ${formatNumber(d2.standardDrinks, 2)}`;
+      drink2Value.textContent = `Standard drinks per $: ${formatNumber(d2.standardDrinksPerDollar, 2)}`;
 
-      if (d1.alcoholPerDollar > d2.alcoholPerDollar) {
-        summary.textContent = `Drink 1 is better value. It gives ${formatNumber(d1.alcoholPerDollar - d2.alcoholPerDollar, 2)} more ml of alcohol per dollar.`;
+      if (d1.standardDrinksPerDollar > d2.standardDrinksPerDollar) {
+        summary.textContent = `Drink 1 is better value. It gives ${formatNumber(d1.standardDrinksPerDollar - d2.standardDrinksPerDollar, 2)} more standard drinks per dollar.`;
         stat1.classList.add('win');
         stat2.classList.add('lose');
-      } else if (d2.alcoholPerDollar > d1.alcoholPerDollar) {
-        summary.textContent = `Drink 2 is better value. It gives ${formatNumber(d2.alcoholPerDollar - d1.alcoholPerDollar, 2)} more ml of alcohol per dollar.`;
+      } else if (d2.standardDrinksPerDollar > d1.standardDrinksPerDollar) {
+        summary.textContent = `Drink 2 is better value. It gives ${formatNumber(d2.standardDrinksPerDollar - d1.standardDrinksPerDollar, 2)} more standard drinks per dollar.`;
         stat2.classList.add('win');
         stat1.classList.add('lose');
       } else {
-        summary.textContent = 'It is a tie. Both drinks give the same alcohol per dollar.';
+        summary.textContent = 'It is a tie. Both drinks give the same standard drinks per dollar.';
       }
     }
 
@@ -306,15 +312,16 @@
       Object.values(fields).forEach(input => input.value = '');
       resetStyles();
       summary.textContent = 'Enter both drinks and click Compare.';
-      drink1Pure.textContent = 'Pure alcohol: -';
-      drink1Value.textContent = 'Alcohol per $: -';
-      drink2Pure.textContent = 'Pure alcohol: -';
-      drink2Value.textContent = 'Alcohol per $: -';
+      drink1Std.textContent = 'Standard drinks: -';
+      drink1Value.textContent = 'Standard drinks per $: -';
+      drink2Std.textContent = 'Standard drinks: -';
+      drink2Value.textContent = 'Standard drinks per $: -';
     }
 
     document.getElementById('compareBtn').addEventListener('click', compareDrinks);
     document.getElementById('exampleBtn').addEventListener('click', loadExample);
     document.getElementById('clearBtn').addEventListener('click', clearAll);
+
     Object.values(fields).forEach(input => input.addEventListener('keydown', event => {
       if (event.key === 'Enter') compareDrinks();
     }));
