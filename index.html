@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
   <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Drink Value">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
   <title>Drink Value Calculator</title>
+
   <style>
     :root {
       --bg: #f3f4f6;
@@ -19,50 +27,78 @@
       --win: #dcfce7;
       --lose: #fee2e2;
     }
-    * { box-sizing: border-box; }
-    body {
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
       margin: 0;
+      padding: 0;
+    }
+
+    body {
       font-family: Arial, Helvetica, sans-serif;
       background: var(--bg);
       color: var(--ink);
       padding: 24px;
+      padding-top: max(24px, env(safe-area-inset-top));
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+      padding-left: max(24px, env(safe-area-inset-left));
+      padding-right: max(24px, env(safe-area-inset-right));
     }
+
     .wrap {
       max-width: 980px;
       margin: 0 auto;
     }
+
     h1 {
       margin: 0 0 8px;
       font-size: 32px;
     }
+
     p.lead {
       margin: 0 0 24px;
       color: var(--muted);
       font-size: 16px;
+      line-height: 1.5;
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 18px;
       margin-bottom: 20px;
     }
+
     .card {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 18px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
     }
+
+    .card:focus-within {
+      box-shadow: 0 6px 22px rgba(0,0,0,0.08);
+      transform: translateY(-1px);
+    }
+
     .card h2 {
       margin-top: 0;
       margin-bottom: 14px;
       font-size: 22px;
     }
+
     label {
       display: block;
       font-weight: 700;
       margin: 12px 0 6px;
     }
+
     input {
       width: 100%;
       padding: 12px;
@@ -70,75 +106,189 @@
       border: 1px solid #93c5fd;
       background: var(--input);
       font-size: 16px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
     }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(15,118,110,0.12);
+      background: #eef6ff;
+    }
+
+    /* Remove spinners */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
     .buttons {
       display: flex;
       gap: 12px;
       flex-wrap: wrap;
       margin: 20px 0;
     }
+
     button {
       border: 0;
       border-radius: 10px;
       padding: 12px 18px;
       font-size: 16px;
       cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
+
+    button:hover {
+      opacity: 0.96;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
     .primary {
       background: var(--accent);
       color: white;
     }
+
     .secondary {
       background: #e5e7eb;
       color: var(--ink);
     }
+
     .result {
       background: var(--card);
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 20px;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
     }
+
     .result h2 {
       margin-top: 0;
     }
+
     .summary {
       margin: 10px 0 16px;
       font-size: 24px;
       font-weight: 800;
       color: var(--accent);
+      line-height: 1.4;
     }
+
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 14px;
       margin-top: 16px;
     }
+
     .stat {
       border-radius: 12px;
       padding: 14px;
       border: 1px solid var(--line);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
     }
-    .stat.win { background: var(--win); }
-    .stat.lose { background: var(--lose); }
+
+    .stat.win {
+      background: var(--win);
+      box-shadow: 0 6px 18px rgba(34,197,94,0.12);
+    }
+
+    .stat.lose {
+      background: var(--lose);
+    }
+
     .stat strong {
       display: block;
       margin-bottom: 6px;
       font-size: 18px;
     }
+
     .formula {
       margin-top: 16px;
       color: var(--muted);
       line-height: 1.5;
     }
+
     .warning {
       color: #991b1b;
       font-weight: 700;
       margin-top: 10px;
     }
+
+    .note {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
     code {
       background: #f3f4f6;
       padding: 2px 6px;
       border-radius: 6px;
+    }
+
+    .flash {
+      animation: flashResult 0.45s ease;
+    }
+
+    @keyframes flashResult {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(15,118,110,0);
+      }
+      50% {
+        transform: scale(1.01);
+        box-shadow: 0 0 0 6px rgba(15,118,110,0.12);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(15,118,110,0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+        padding-top: max(16px, env(safe-area-inset-top));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .summary {
+        font-size: 21px;
+      }
+
+      .buttons {
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        background: linear-gradient(to top, var(--bg) 75%, rgba(243,244,246,0));
+        padding-top: 12px;
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+      }
+
+      .buttons button {
+        flex: 1 1 100%;
+      }
+
+      .primary {
+        font-weight: 700;
+      }
     }
   </style>
 </head>
@@ -150,26 +300,94 @@
     <div class="grid">
       <div class="card" id="card1">
         <h2>Drink 1</h2>
+
         <label for="volume1">Volume (ml)</label>
-        <input id="volume1" type="number" inputmode="decimal" min="0" step="0.1" placeholder="375" />
+        <input
+          id="volume1"
+          type="number"
+          inputmode="decimal"
+          enterkeyhint="next"
+          min="0"
+          step="0.1"
+          placeholder="375"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
 
         <label for="abv1">Alcohol %</label>
-        <input id="abv1" type="number" inputmode="decimal" min="0" step="0.1" placeholder="4.5" />
+        <input
+          id="abv1"
+          type="number"
+          inputmode="decimal"
+          enterkeyhint="next"
+          min="0"
+          step="0.1"
+          placeholder="4.5"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
 
         <label for="price1">Price ($)</label>
-        <input id="price1" type="number" inputmode="decimal" min="0" step="0.01" placeholder="6.00" />
+        <input
+          id="price1"
+          type="number"
+          inputmode="decimal"
+          enterkeyhint="next"
+          min="0"
+          step="0.01"
+          placeholder="6.00"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
       </div>
 
       <div class="card" id="card2">
         <h2>Drink 2</h2>
+
         <label for="volume2">Volume (ml)</label>
-        <input id="volume2" type="number" inputmode="decimal" min="0" step="0.1" placeholder="330" />
+        <input
+          id="volume2"
+          type="number"
+          inputmode="decimal"
+          enterkeyhint="next"
+          min="0"
+          step="0.1"
+          placeholder="330"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
 
         <label for="abv2">Alcohol %</label>
-        <input id="abv2" type="number" inputmode="decimal" min="0" step="0.1" placeholder="7" />
+        <input
+          id="abv2"
+          type="number"
+          inputmode="decimal"
+          enterkeyhint="next"
+          min="0"
+          step="0.1"
+          placeholder="7"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
 
         <label for="price2">Price ($)</label>
-        <input id="price2" type="number" inputmode="decimal" min="0" step="0.01" placeholder="8.00" />
+        <input
+          id="price2"
+          type="number"
+          inputmode="decimal"
+          enterkeyhint="done"
+          min="0"
+          step="0.01"
+          placeholder="8.00"
+          autocomplete="off"
+          autocapitalize="off"
+          spellcheck="false"
+        />
       </div>
     </div>
 
@@ -179,7 +397,7 @@
       <button class="secondary" id="clearBtn">Clear</button>
     </div>
 
-    <div class="result">
+    <div class="result" id="resultBox">
       <h2>Result</h2>
       <div class="summary" id="summary">Enter both drinks and click Compare.</div>
       <div id="warning" class="warning"></div>
@@ -203,10 +421,14 @@
         <div><code>Standard drinks = Grams of alcohol ÷ 10</code></div>
         <div><code>Standard drinks per $ = Standard drinks ÷ Price</code></div>
       </div>
+
+      <div class="note">Saved automatically on this device.</div>
     </div>
   </div>
 
   <script>
+    const STORAGE_KEY = 'drink-value-calculator-fields-v1';
+
     const fields = {
       volume1: document.getElementById('volume1'),
       abv1: document.getElementById('abv1'),
@@ -216,10 +438,20 @@
       price2: document.getElementById('price2'),
     };
 
+    const fieldOrder = [
+      fields.volume1,
+      fields.abv1,
+      fields.price1,
+      fields.volume2,
+      fields.abv2,
+      fields.price2
+    ];
+
     const summary = document.getElementById('summary');
     const warning = document.getElementById('warning');
     const stat1 = document.getElementById('stat1');
     const stat2 = document.getElementById('stat2');
+    const resultBox = document.getElementById('resultBox');
     const drink1Std = document.getElementById('drink1Std');
     const drink1Value = document.getElementById('drink1Value');
     const drink2Std = document.getElementById('drink2Std');
@@ -239,11 +471,58 @@
       warning.textContent = '';
     }
 
+    function flashResult() {
+      resultBox.classList.remove('flash');
+      void resultBox.offsetWidth;
+      resultBox.classList.add('flash');
+    }
+
     function calculateDrink(volume, abv, price) {
       const gramsAlcohol = volume * (abv / 100) * 0.789;
       const standardDrinks = gramsAlcohol / 10;
       const standardDrinksPerDollar = standardDrinks / price;
       return { gramsAlcohol, standardDrinks, standardDrinksPerDollar };
+    }
+
+    function saveFields() {
+      const data = {};
+      Object.entries(fields).forEach(([key, input]) => {
+        data[key] = input.value;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadSavedFields() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+
+      try {
+        const data = JSON.parse(raw);
+        Object.entries(fields).forEach(([key, input]) => {
+          if (typeof data[key] === 'string') {
+            input.value = data[key];
+          }
+        });
+      } catch (error) {
+        console.error('Failed to load saved values:', error);
+      }
+    }
+
+    function clearSavedFields() {
+      localStorage.removeItem(STORAGE_KEY);
+    }
+
+    function focusNextField(currentInput) {
+      const currentIndex = fieldOrder.indexOf(currentInput);
+      if (currentIndex === -1) return;
+
+      const nextInput = fieldOrder[currentIndex + 1];
+      if (nextInput) {
+        nextInput.focus();
+        nextInput.select?.();
+      } else {
+        document.getElementById('compareBtn').focus();
+      }
     }
 
     function compareDrinks() {
@@ -266,6 +545,7 @@
         drink1Value.textContent = 'Standard drinks per $: -';
         drink2Std.textContent = 'Standard drinks: -';
         drink2Value.textContent = 'Standard drinks per $: -';
+        flashResult();
         return;
       }
 
@@ -276,6 +556,7 @@
         drink1Value.textContent = 'Standard drinks per $: -';
         drink2Std.textContent = 'Standard drinks: -';
         drink2Value.textContent = 'Standard drinks per $: -';
+        flashResult();
         return;
       }
 
@@ -298,35 +579,69 @@
       } else {
         summary.textContent = 'It is a tie. Both drinks give the same standard drinks per dollar.';
       }
+
+      flashResult();
     }
 
     function loadExample() {
-      fields.volume1.value = 375;
-      fields.abv1.value = 4.5;
-      fields.price1.value = 6;
-      fields.volume2.value = 330;
-      fields.abv2.value = 7;
-      fields.price2.value = 8;
+      fields.volume1.value = '375';
+      fields.abv1.value = '4.5';
+      fields.price1.value = '6';
+      fields.volume2.value = '330';
+      fields.abv2.value = '7';
+      fields.price2.value = '8';
+      saveFields();
       compareDrinks();
     }
 
     function clearAll() {
       Object.values(fields).forEach(input => input.value = '');
+      clearSavedFields();
       resetStyles();
       summary.textContent = 'Enter both drinks and click Compare.';
       drink1Std.textContent = 'Standard drinks: -';
       drink1Value.textContent = 'Standard drinks per $: -';
       drink2Std.textContent = 'Standard drinks: -';
       drink2Value.textContent = 'Standard drinks per $: -';
+      flashResult();
+    }
+
+    function registerServiceWorker() {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(error => {
+            console.error('Service worker registration failed:', error);
+          });
+        });
+      }
     }
 
     document.getElementById('compareBtn').addEventListener('click', compareDrinks);
     document.getElementById('exampleBtn').addEventListener('click', loadExample);
     document.getElementById('clearBtn').addEventListener('click', clearAll);
 
-    Object.values(fields).forEach(input => input.addEventListener('keydown', event => {
-      if (event.key === 'Enter') compareDrinks();
-    }));
+    Object.values(fields).forEach(input => {
+      input.addEventListener('input', saveFields);
+
+      input.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+
+          if (input === fields.price2) {
+            compareDrinks();
+          } else {
+            focusNextField(input);
+          }
+        }
+      });
+    });
+
+    loadSavedFields();
+    registerServiceWorker();
+
+    if (Object.values(fields).some(input => input.value !== '')) {
+      compareDrinks();
+    }
   </script>
 </body>
 </html>
