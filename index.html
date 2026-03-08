@@ -98,6 +98,16 @@
       margin: 12px 0 6px;
     }
 
+    .field-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field-group label {
+      margin-top: 0;
+    }
+
     input {
       width: 100%;
       padding: 12px;
@@ -273,6 +283,19 @@
         font-size: 21px;
       }
 
+      .field-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .field-group label {
+        font-size: 14px;
+      }
+
+      input {
+        padding: 10px;
+      }
+
       .buttons {
         flex-direction: column;
       }
@@ -292,93 +315,109 @@
       <div class="card" id="card1">
         <h2>Drink 1</h2>
 
-        <label for="volume1">Volume (ml)</label>
-        <input
-          id="volume1"
-          type="number"
-          inputmode="decimal"
-          enterkeyhint="next"
-          min="0"
-          step="0.1"
-          placeholder="375"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-        />
+        <div class="field-row">
+          <div class="field-group">
+            <label for="volume1">Volume (ml)</label>
+            <input
+              id="volume1"
+              type="number"
+              inputmode="decimal"
+              enterkeyhint="next"
+              min="0"
+              step="0.1"
+              placeholder="375"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
 
-        <label for="abv1">Alcohol %</label>
-        <input
-          id="abv1"
-          type="number"
-          inputmode="decimal"
-          enterkeyhint="next"
-          min="0"
-          step="0.1"
-          placeholder="4.5"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-        />
+          <div class="field-group">
+            <label for="abv1">Alcohol %</label>
+            <input
+              id="abv1"
+              type="number"
+              inputmode="decimal"
+              enterkeyhint="next"
+              min="0"
+              step="0.1"
+              placeholder="4.5"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
 
-        <label for="price1">Price ($)</label>
-        <input
-          id="price1"
-          type="number"
-          inputmode="decimal"
-          enterkeyhint="next"
-          min="0"
-          step="0.01"
-          placeholder="6.00"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-        />
+          <div class="field-group">
+            <label for="price1">Price ($)</label>
+            <input
+              id="price1"
+              type="number"
+              inputmode="decimal"
+              enterkeyhint="next"
+              min="0"
+              step="0.01"
+              placeholder="6.00"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
+        </div>
       </div>
 
       <div class="card" id="card2">
         <h2>Drink 2</h2>
 
-        <label for="volume2">Volume (ml)</label>
-        <input
-          id="volume2"
-          type="number"
-          inputmode="decimal"
-          enterkeyhint="next"
-          min="0"
-          step="0.1"
-          placeholder="330"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-        />
+        <div class="field-row">
+          <div class="field-group">
+            <label for="volume2">Volume (ml)</label>
+            <input
+              id="volume2"
+              type="number"
+              inputmode="decimal"
+              enterkeyhint="next"
+              min="0"
+              step="0.1"
+              placeholder="330"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
 
-        <label for="abv2">Alcohol %</label>
-        <input
-          id="abv2"
-          type="number"
-          inputmode="decimal"
-          enterkeyhint="next"
-          min="0"
-          step="0.1"
-          placeholder="7"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-        />
+          <div class="field-group">
+            <label for="abv2">Alcohol %</label>
+            <input
+              id="abv2"
+              type="number"
+              inputmode="decimal"
+              enterkeyhint="next"
+              min="0"
+              step="0.1"
+              placeholder="7"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
 
-        <label for="price2">Price ($)</label>
-        <input
-          id="price2"
-          type="number"
-          inputmode="decimal"
-          enterkeyhint="done"
-          min="0"
-          step="0.01"
-          placeholder="8.00"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-        />
+          <div class="field-group">
+            <label for="price2">Price ($)</label>
+            <input
+              id="price2"
+              type="number"
+              inputmode="decimal"
+              enterkeyhint="done"
+              min="0"
+              step="0.01"
+              placeholder="8.00"
+              autocomplete="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
