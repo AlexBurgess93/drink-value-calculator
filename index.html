@@ -188,7 +188,7 @@
       font-size:16px;
       color:var(--ink);
       outline:none;
-      transition:border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      transition:border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, color 0.15s ease;
     }
 
     input:focus{
@@ -206,6 +206,15 @@
     input[type="number"]{
       -moz-appearance:textfield;
       appearance:textfield;
+    }
+
+    .price-input::placeholder{
+      color:var(--muted);
+      opacity:1;
+    }
+
+    .price-input.focused-placeholder{
+      color:var(--ink);
     }
 
     .actions{
@@ -525,7 +534,7 @@
 
           <div class="field-group">
             <label for="price1">Price ($)</label>
-            <input id="price1" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off">
+            <input id="price1" class="price-input" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" placeholder="$0.00">
           </div>
         </div>
       </div>
@@ -556,7 +565,7 @@
 
           <div class="field-group">
             <label for="price2">Price ($)</label>
-            <input id="price2" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off">
+            <input id="price2" class="price-input" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" placeholder="$0.00">
           </div>
         </div>
       </div>
@@ -901,12 +910,35 @@
     });
 
     [fields.price1, fields.price2].forEach(input => {
-      input.addEventListener('input', () => handleCurrencyInput(input));
       input.addEventListener('focus', () => {
-        if (input.value) moveCaretToEnd(input);
+        if (!input.value) {
+          input.dataset.cents = '0';
+          input.value = '$0.00';
+        }
+        input.classList.add('focused-placeholder');
+        moveCaretToEnd(input);
       });
+
+      input.addEventListener('input', () => {
+        handleCurrencyInput(input);
+      });
+
       input.addEventListener('click', () => {
-        if (input.value) moveCaretToEnd(input);
+        if (input.value) {
+          moveCaretToEnd(input);
+        }
+      });
+
+      input.addEventListener('blur', () => {
+        const digits = (input.dataset.cents || '').replace(/\D/g, '');
+        const numericValue = digits ? Number(digits) : 0;
+
+        input.classList.remove('focused-placeholder');
+
+        if (!digits || numericValue === 0) {
+          input.value = '';
+          input.dataset.cents = '';
+        }
       });
     });
 
