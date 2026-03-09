@@ -134,36 +134,37 @@
 
     .size-chip{
       appearance:none;
-      border:1px solid var(--chip-border);
-      background:var(--chip-bg);
+      border:1px solid #93c5fd;
+      background:#eef6ff;
       color:var(--ink);
-      border-radius:999px;
-      padding:10px 14px;
-      font-size:14px;
-      line-height:1.1;
+      border-radius:12px;
+      padding:8px 10px;
+      font-size:13px;
       font-weight:600;
       cursor:pointer;
-      transition:border-color 0.15s ease, background 0.15s ease, color 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
-      box-shadow:none;
+
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.08s ease;
     }
 
     .size-chip:hover{
-      border-color:#94a3b8;
-      background:#ffffff;
-      opacity:1;
+      border-color:var(--accent);
+      background:#f4f9ff;
     }
 
     .size-chip:active{
-      transform:scale(.98);
+      transform:scale(.97);
     }
 
     .size-chip.active{
-      background:var(--chip-active-bg);
-      border-color:var(--chip-active);
-      color:var(--chip-active);
-      box-shadow:0 0 0 3px rgba(15,118,110,0.10);
+      border-color:var(--accent);
+      background:#e0f7f5;
+      box-shadow:0 0 0 2px rgba(15,118,110,0.12);
     }
-
+    
     .custom-volume{
       display:none;
       margin-bottom:4px;
@@ -477,7 +478,7 @@
       }
 
       .size-chip{
-        flex:1 1 calc(50% - 4px);
+        flex:1 1 calc(50% - 6px);
         text-align:center;
       }
 
