@@ -29,7 +29,6 @@
       --accent-strong:#0b5f59;
       --input:#dbeafe;
       --win:#dcfce7;
-      --lose:#fee2e2;
     }
 
     *{
@@ -253,45 +252,6 @@
       box-shadow:0 10px 22px rgba(34,197,94,0.18);
     }
 
-    .stat.win.animate-win::after{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      border-radius:14px;
-      padding:2px;
-      background:linear-gradient(120deg, #22c55e, #34d399, #10b981, #22c55e);
-      -webkit-mask:
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-      -webkit-mask-composite:xor;
-      mask-composite:exclude;
-      animation:winBorderSweep 1.15s ease-out 1;
-      pointer-events:none;
-    }
-
-    @keyframes winBorderSweep{
-      0%{
-        opacity:0;
-        transform:scale(0.98);
-        filter:brightness(1);
-      }
-      20%{
-        opacity:1;
-      }
-      70%{
-        opacity:1;
-        filter:brightness(1.08);
-      }
-      100%{
-        opacity:0;
-        transform:scale(1.01);
-      }
-    }
-
-    .stat.lose{
-      background:var(--lose);
-    }
-
     .stat strong{
       display:flex;
       align-items:center;
@@ -450,7 +410,7 @@
       <button class="secondary" id="clearBtn" type="button">Clear</button>
     </div>
 
-    <div class="result flash" id="resultBox">
+    <div class="result" id="resultBox">
       <h2>Result</h2>
 
       <div class="summary" id="summary">Compare two drinks</div>
@@ -532,8 +492,6 @@
     function reset() {
       stat1.className = 'stat';
       stat2.className = 'stat';
-      stat1.classList.remove('animate-win');
-      stat2.classList.remove('animate-win');
       warning.textContent = '';
       drink1Std.textContent = '-';
       drink1Value.textContent = '-';
@@ -549,12 +507,6 @@
         std,
         value: std / price
       };
-    }
-
-    function triggerWinAnimation(element) {
-      element.classList.remove('animate-win');
-      void element.offsetWidth;
-      element.classList.add('animate-win');
     }
 
     function compare() {
@@ -593,13 +545,9 @@
       if (d1.value > d2.value) {
         summary.textContent = 'Drink 1 wins 🏆';
         stat1.classList.add('win');
-        stat2.classList.add('lose');
-        triggerWinAnimation(stat1);
       } else if (d2.value > d1.value) {
         summary.textContent = 'Drink 2 wins 🏆';
         stat2.classList.add('win');
-        stat1.classList.add('lose');
-        triggerWinAnimation(stat2);
       } else {
         summary.textContent = 'Tie';
       }
