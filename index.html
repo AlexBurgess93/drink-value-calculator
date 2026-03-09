@@ -26,6 +26,7 @@
       --muted:#6b7280;
       --line:#d1d5db;
       --accent:#0f766e;
+      --accent-strong:#0b5f59;
       --input:#dbeafe;
       --win:#dcfce7;
       --lose:#fee2e2;
@@ -76,7 +77,7 @@
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
       gap:18px;
-      margin-bottom:20px;
+      margin-bottom:18px;
     }
 
     .card{
@@ -145,21 +146,20 @@
       appearance:textfield;
     }
 
-    .buttons{
+    .actions{
       display:flex;
       gap:12px;
       flex-wrap:wrap;
-      margin:20px 0;
+      margin:0 0 22px;
+      padding-top:2px;
     }
 
     button{
-      border:0;
       border-radius:12px;
       padding:12px 18px;
       font-size:16px;
       cursor:pointer;
-      box-shadow:0 2px 8px rgba(0,0,0,0.06);
-      transition:transform 0.08s ease, opacity 0.12s ease;
+      transition:transform 0.08s ease, opacity 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
     }
 
     button:hover{
@@ -171,28 +171,53 @@
     }
 
     .primary{
+      border:0;
       background:var(--accent);
       color:white;
       font-weight:700;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .primary:hover{
+      background:var(--accent-strong);
     }
 
     .secondary{
-      background:#e5e7eb;
+      border:1px solid var(--line);
+      background:transparent;
+      color:var(--muted);
+      font-weight:600;
+      box-shadow:none;
+    }
+
+    .secondary:hover{
       color:var(--ink);
+      background:rgba(255,255,255,0.6);
     }
 
     .result{
       background:var(--card);
       border:1px solid var(--line);
-      border-radius:16px;
+      border-radius:18px;
       padding:20px;
       scroll-margin-top:20px;
-      transition:box-shadow 0.2s ease, transform 0.2s ease;
+      box-shadow:0 10px 28px rgba(17,24,39,0.06);
+      position:relative;
+    }
+
+    .result::before{
+      content:"";
+      display:block;
+      height:1px;
+      background:linear-gradient(to right, transparent, rgba(17,24,39,0.08), transparent);
+      margin-bottom:14px;
     }
 
     .result h2{
-      margin-top:0;
-      margin-bottom:6px;
+      margin:0 0 6px;
+      font-size:18px;
+      font-weight:700;
+      letter-spacing:-0.01em;
     }
 
     .summary{
@@ -201,11 +226,7 @@
       font-weight:800;
       color:var(--accent);
       line-height:1.4;
-      min-height:0;
-    }
-
-    .summary:empty{
-      display:none;
+      min-height:1.4em;
     }
 
     .stats{
@@ -219,7 +240,10 @@
       border-radius:14px;
       padding:14px;
       border:1px solid var(--line);
+      background:#fff;
       transition:transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      position:relative;
+      overflow:hidden;
     }
 
     .stat.win{
@@ -229,14 +253,61 @@
       box-shadow:0 10px 22px rgba(34,197,94,0.18);
     }
 
+    .stat.win.animate-win::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border-radius:14px;
+      padding:2px;
+      background:linear-gradient(120deg, #22c55e, #34d399, #10b981, #22c55e);
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite:xor;
+      mask-composite:exclude;
+      animation:winBorderSweep 1.15s ease-out 1;
+      pointer-events:none;
+    }
+
+    @keyframes winBorderSweep{
+      0%{
+        opacity:0;
+        transform:scale(0.98);
+        filter:brightness(1);
+      }
+      20%{
+        opacity:1;
+      }
+      70%{
+        opacity:1;
+        filter:brightness(1.08);
+      }
+      100%{
+        opacity:0;
+        transform:scale(1.01);
+      }
+    }
+
     .stat.lose{
       background:var(--lose);
     }
 
     .stat strong{
-      display:block;
+      display:flex;
+      align-items:center;
+      gap:6px;
       margin-bottom:8px;
       font-size:18px;
+    }
+
+    .trophy{
+      display:none;
+      font-size:16px;
+      line-height:1;
+    }
+
+    .stat.win .trophy{
+      display:inline-block;
     }
 
     .result-row{
@@ -281,9 +352,9 @@
     }
 
     @keyframes flashResult{
-      0%{transform:scale(1);box-shadow:0 0 0 rgba(15,118,110,0);}
-      50%{transform:scale(1.01);box-shadow:0 0 0 6px rgba(15,118,110,0.12);}
-      100%{transform:scale(1);box-shadow:0 0 0 rgba(15,118,110,0);}
+      0%{transform:scale(1);box-shadow:0 10px 28px rgba(17,24,39,0.06);}
+      50%{transform:scale(1.01);box-shadow:0 0 0 6px rgba(15,118,110,0.10), 0 10px 28px rgba(17,24,39,0.08);}
+      100%{transform:scale(1);box-shadow:0 10px 28px rgba(17,24,39,0.06);}
     }
 
     @media (max-width:768px){
@@ -312,11 +383,11 @@
         padding:10px;
       }
 
-      .buttons{
+      .actions{
         flex-direction:column;
       }
 
-      .buttons button{
+      .actions button{
         width:100%;
       }
     }
@@ -374,21 +445,21 @@
 
     </div>
 
-    <div class="buttons">
+    <div class="actions">
       <button class="primary" id="compareBtn" type="button">Compare</button>
       <button class="secondary" id="clearBtn" type="button">Clear</button>
     </div>
 
-    <div class="result" id="resultBox">
+    <div class="result flash" id="resultBox">
       <h2>Result</h2>
 
-      <div class="summary" id="summary"></div>
+      <div class="summary" id="summary">Compare two drinks</div>
       <div id="warning" class="warning"></div>
 
       <div class="stats">
 
         <div class="stat" id="stat1">
-          <strong>Drink 1</strong>
+          <strong>Drink 1 <span class="trophy" aria-hidden="true">🏆</span></strong>
 
           <div class="result-row">
             <span class="result-label">Standard drinks</span>
@@ -402,7 +473,7 @@
         </div>
 
         <div class="stat" id="stat2">
-          <strong>Drink 2</strong>
+          <strong>Drink 2 <span class="trophy" aria-hidden="true">🏆</span></strong>
 
           <div class="result-row">
             <span class="result-label">Standard drinks</span>
@@ -461,6 +532,8 @@
     function reset() {
       stat1.className = 'stat';
       stat2.className = 'stat';
+      stat1.classList.remove('animate-win');
+      stat2.classList.remove('animate-win');
       warning.textContent = '';
       drink1Std.textContent = '-';
       drink1Value.textContent = '-';
@@ -478,6 +551,12 @@
       };
     }
 
+    function triggerWinAnimation(element) {
+      element.classList.remove('animate-win');
+      void element.offsetWidth;
+      element.classList.add('animate-win');
+    }
+
     function compare() {
       reset();
 
@@ -490,7 +569,15 @@
       const p2 = num(fields.price2.value);
 
       if (!v1 || !a1 || !p1 || !v2 || !a2 || !p2) {
-        summary.textContent = 'Enter all values first.';
+        summary.textContent = 'Enter all values';
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      if ([v1, a1, p1, v2, a2, p2].some(v => Number.isNaN(v) || v < 0) || p1 <= 0 || p2 <= 0) {
+        summary.textContent = 'Fix the inputs';
+        warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
 
@@ -504,15 +591,17 @@
       drink2Value.textContent = format(d2.value);
 
       if (d1.value > d2.value) {
-        summary.textContent = 'Drink 1 is better value.';
+        summary.textContent = 'Drink 1 wins 🏆';
         stat1.classList.add('win');
         stat2.classList.add('lose');
+        triggerWinAnimation(stat1);
       } else if (d2.value > d1.value) {
-        summary.textContent = 'Drink 2 is better value.';
+        summary.textContent = 'Drink 2 wins 🏆';
         stat2.classList.add('win');
         stat1.classList.add('lose');
+        triggerWinAnimation(stat2);
       } else {
-        summary.textContent = "It's a tie.";
+        summary.textContent = 'Tie';
       }
 
       resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -521,7 +610,7 @@
     function clearAll() {
       Object.values(fields).forEach(f => f.value = '');
       reset();
-      summary.textContent = '';
+      summary.textContent = 'Compare two drinks';
     }
 
     document.getElementById('compareBtn').addEventListener('click', compare);
