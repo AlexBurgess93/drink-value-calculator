@@ -367,11 +367,6 @@
       display:none;
     }
 
-    .meta-label{
-      color:var(--muted);
-      font-weight:600;
-    }
-
     .stat-divider{
       height:1px;
       background:linear-gradient(to right, rgba(17,24,39,0.10), rgba(17,24,39,0.04));
@@ -392,6 +387,18 @@
       z-index:1;
     }
 
+    .cost-row.win-metric{
+      background:#ecfdf5;
+      border-radius:6px;
+      padding:4px 6px;
+      border:1px solid #bbf7d0;
+    }
+
+    .cost-row.win-metric .result-value{
+      color:#059669;
+      font-weight:800;
+    }
+
     .result-label{
       text-align:left;
       color:var(--muted);
@@ -410,6 +417,10 @@
     .stat.win .result-value{
       color:var(--accent);
       font-weight:800;
+    }
+
+    .stat.win .cost-row.win-metric .result-value{
+      color:#059669;
     }
 
     .formula{
@@ -574,7 +585,7 @@
             <span class="result-value" id="drink1Std">-</span>
           </div>
 
-          <div class="result-row">
+          <div class="result-row cost-row" id="costRow1">
             <span class="result-label">Cost per standard drink</span>
             <span class="result-value" id="drink1CostStd">-</span>
           </div>
@@ -605,7 +616,7 @@
             <span class="result-value" id="drink2Std">-</span>
           </div>
 
-          <div class="result-row">
+          <div class="result-row cost-row" id="costRow2">
             <span class="result-label">Cost per standard drink</span>
             <span class="result-value" id="drink2CostStd">-</span>
           </div>
@@ -681,6 +692,9 @@
     const stat1 = document.getElementById('stat1');
     const stat2 = document.getElementById('stat2');
 
+    const costRow1 = document.getElementById('costRow1');
+    const costRow2 = document.getElementById('costRow2');
+
     const drink1Meta = document.getElementById('drink1Meta');
     const drink2Meta = document.getElementById('drink2Meta');
 
@@ -745,20 +759,11 @@
       return SIZE_MAP[sizeKey].volume;
     }
 
-    function getSizeMeta(drink, volume) {
-      const sizeKey = selectedSizes[drink];
-      if (!sizeKey) return '';
-
-      if (sizeKey === 'custom') {
-        return `Custom (${volume}mL)`;
-      }
-
-      return `${SIZE_MAP[sizeKey].label} (${volume}mL)`;
-    }
-
     function resetResults() {
       stat1.classList.remove('win');
       stat2.classList.remove('win');
+      costRow1.classList.remove('win-metric');
+      costRow2.classList.remove('win-metric');
       warning.textContent = '';
 
       drink1Meta.innerHTML = '';
@@ -801,15 +806,8 @@
         return;
       }
 
-      drink1Meta.innerHTML =
-        `<span class="meta-label">Size:</span> ${getSizeMeta('1', v1)} - ` +
-        `<span class="meta-label">ABV:</span> ${a1}% - ` +
-        `<span class="meta-label">Price:</span> ${formatInputPrice(p1)}`;
-
-      drink2Meta.innerHTML =
-        `<span class="meta-label">Size:</span> ${getSizeMeta('2', v2)} - ` +
-        `<span class="meta-label">ABV:</span> ${a2}% - ` +
-        `<span class="meta-label">Price:</span> ${formatInputPrice(p2)}`;
+      drink1Meta.innerHTML = `${v1}mL • ${a1}% • ${formatInputPrice(p1)}`;
+      drink2Meta.innerHTML = `${v2}mL • ${a2}% • ${formatInputPrice(p2)}`;
 
       const d1 = calc(v1, a1, p1);
       const d2 = calc(v2, a2, p2);
@@ -829,9 +827,11 @@
       if (d1.costStd < d2.costStd) {
         summary.textContent = 'Drink 1 wins 🏆';
         stat1.classList.add('win');
+        costRow1.classList.add('win-metric');
       } else if (d2.costStd < d1.costStd) {
         summary.textContent = 'Drink 2 wins 🏆';
         stat2.classList.add('win');
+        costRow2.classList.add('win-metric');
       } else {
         summary.textContent = 'Tie';
       }
