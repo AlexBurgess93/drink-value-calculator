@@ -68,8 +68,8 @@
     p.lead{
       margin:0 0 24px;
       color:var(--muted);
-      font-size:14px;
-      line-height:1.25;
+      font-size:16px;
+      line-height:1.5;
     }
 
     .grid{
@@ -307,20 +307,17 @@
       min-height:1.2em;
     }
 
+    .disclaimer{
+      margin-top:10px;
+      color:var(--muted);
+      line-height:1.4;
+      font-size:11px;
+    }
+
     .bottom-actions{
       margin-top:16px;
       display:flex;
       justify-content:center;
-    }
-
-    .flash{
-      animation:flashResult .45s ease;
-    }
-
-    @keyframes flashResult{
-      0%{transform:scale(1);box-shadow:0 10px 28px rgba(17,24,39,0.06);}
-      50%{transform:scale(1.01);box-shadow:0 0 0 6px rgba(15,118,110,0.10), 0 10px 28px rgba(17,24,39,0.08);}
-      100%{transform:scale(1);box-shadow:0 10px 28px rgba(17,24,39,0.06);}
     }
 
     @media (max-width:768px){
@@ -443,6 +440,21 @@
             <span class="result-label">Standard drinks per $</span>
             <span class="result-value" id="drink1Value">-</span>
           </div>
+
+          <div class="result-row">
+            <span class="result-label">Cost per standard drink</span>
+            <span class="result-value" id="drink1CostStd">-</span>
+          </div>
+
+          <div class="result-row">
+            <span class="result-label">Cost per litre</span>
+            <span class="result-value" id="drink1CostLitre">-</span>
+          </div>
+
+          <div class="result-row">
+            <span class="result-label">Drinks to ~0.05 BAC</span>
+            <span class="result-value" id="drink1ToLimit">-</span>
+          </div>
         </div>
 
         <div class="stat" id="stat2">
@@ -457,15 +469,36 @@
             <span class="result-label">Standard drinks per $</span>
             <span class="result-value" id="drink2Value">-</span>
           </div>
+
+          <div class="result-row">
+            <span class="result-label">Cost per standard drink</span>
+            <span class="result-value" id="drink2CostStd">-</span>
+          </div>
+
+          <div class="result-row">
+            <span class="result-label">Cost per litre</span>
+            <span class="result-value" id="drink2CostLitre">-</span>
+          </div>
+
+          <div class="result-row">
+            <span class="result-label">Drinks to ~0.05 BAC</span>
+            <span class="result-value" id="drink2ToLimit">-</span>
+          </div>
         </div>
 
       </div>
 
       <div class="formula">
         <div><strong>Formula:</strong></div>
-        <div>Grams of alcohol = Volume × (Alcohol % ÷ 100) × 0.789</div>
-        <div>Standard drinks = Grams ÷ 10</div>
+        <div>Standard drinks = Volume × (Alcohol % ÷ 100) × 0.789 ÷ 10</div>
         <div>Standard drinks per $ = Standard drinks ÷ Price</div>
+        <div>Cost per standard drink = Price ÷ Standard drinks</div>
+        <div>Cost per litre = Price ÷ (Volume ÷ 1000)</div>
+      </div>
+
+      <div class="disclaimer">
+        Drinks to ~0.05 BAC is a rough estimate only, based on ~2.5 standard drinks.
+        Real BAC depends on body size, sex, food, time, and metabolism.
       </div>
     </div>
 
@@ -476,6 +509,8 @@
   </div>
 
   <script>
+    const ROUGH_STANDARD_DRINKS_TO_005 = 2.5;
+
     const fields = {
       volume1: document.getElementById('volume1'),
       abv1: document.getElementById('abv1'),
@@ -493,8 +528,15 @@
 
     const drink1Std = document.getElementById('drink1Std');
     const drink1Value = document.getElementById('drink1Value');
+    const drink1CostStd = document.getElementById('drink1CostStd');
+    const drink1CostLitre = document.getElementById('drink1CostLitre');
+    const drink1ToLimit = document.getElementById('drink1ToLimit');
+
     const drink2Std = document.getElementById('drink2Std');
     const drink2Value = document.getElementById('drink2Value');
+    const drink2CostStd = document.getElementById('drink2CostStd');
+    const drink2CostLitre = document.getElementById('drink2CostLitre');
+    const drink2ToLimit = document.getElementById('drink2ToLimit');
 
     const resultBox = document.getElementById('resultBox');
 
@@ -506,23 +548,42 @@
       return Number(v).toFixed(2);
     }
 
+    function formatCurrency(v) {
+      return '$' + Number(v).toFixed(2);
+    }
+
     function reset() {
       stat1.className = 'stat';
       stat2.className = 'stat';
       warning.textContent = '';
+
       drink1Std.textContent = '-';
       drink1Value.textContent = '-';
+      drink1CostStd.textContent = '-';
+      drink1CostLitre.textContent = '-';
+      drink1ToLimit.textContent = '-';
+
       drink2Std.textContent = '-';
       drink2Value.textContent = '-';
+      drink2CostStd.textContent = '-';
+      drink2CostLitre.textContent = '-';
+      drink2ToLimit.textContent = '-';
     }
 
     function calculate(volume, abv, price) {
       const grams = volume * (abv / 100) * 0.789;
       const std = grams / 10;
+      const value = std / price;
+      const costPerStd = price / std;
+      const costPerLitre = price / (volume / 1000);
+      const drinksToLimit = ROUGH_STANDARD_DRINKS_TO_005 / std;
 
       return {
         std,
-        value: std / price
+        value,
+        costPerStd,
+        costPerLitre,
+        drinksToLimit
       };
     }
 
@@ -555,9 +616,15 @@
 
       drink1Std.textContent = format(d1.std);
       drink1Value.textContent = format(d1.value);
+      drink1CostStd.textContent = formatCurrency(d1.costPerStd);
+      drink1CostLitre.textContent = formatCurrency(d1.costPerLitre);
+      drink1ToLimit.textContent = format(d1.drinksToLimit);
 
       drink2Std.textContent = format(d2.std);
       drink2Value.textContent = format(d2.value);
+      drink2CostStd.textContent = formatCurrency(d2.costPerStd);
+      drink2CostLitre.textContent = formatCurrency(d2.costPerLitre);
+      drink2ToLimit.textContent = format(d2.drinksToLimit);
 
       if (d1.value > d2.value) {
         summary.textContent = 'Drink 1 wins 🏆';
