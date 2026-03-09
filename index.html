@@ -1,483 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
 
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Drink Value">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#0f766e">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Drink Value">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Drink Value Calculator</title>
 
-<title>Drink Value Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --ink:#111827;
+      --muted:#6b7280;
+      --line:#d1d5db;
+      --accent:#0f766e;
+      --input:#dbeafe;
+      --win:#dcfce7;
+      --lose:#fee2e2;
+    }
 
-<style>
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
 
-:root{
---bg:#f3f4f6;
---card:#ffffff;
---ink:#111827;
---muted:#6b7280;
---line:#d1d5db;
---accent:#0f766e;
---input:#dbeafe;
---win:#dcfce7;
---lose:#fee2e2;
-}
+    html,body{
+      margin:0;
+      padding:0;
+      scroll-behavior:smooth;
+    }
 
-*{
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
+    body{
+      font-family:'Inter',system-ui,-apple-system,sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+      padding:24px;
+      padding-top:max(24px,env(safe-area-inset-top));
+      padding-bottom:max(24px,env(safe-area-inset-bottom));
+      padding-left:max(24px,env(safe-area-inset-left));
+      padding-right:max(24px,env(safe-area-inset-right));
+    }
 
-html,body{
-margin:0;
-padding:0;
-scroll-behavior:smooth;
-}
+    .wrap{
+      max-width:980px;
+      margin:0 auto;
+    }
 
-body{
-font-family:'Inter',system-ui,-apple-system,sans-serif;
-background:var(--bg);
-color:var(--ink);
-padding:24px;
-padding-top:max(24px,env(safe-area-inset-top));
-padding-bottom:max(24px,env(safe-area-inset-bottom));
-padding-left:max(24px,env(safe-area-inset-left));
-padding-right:max(24px,env(safe-area-inset-right));
-}
+    h1{
+      margin:0 0 6px;
+      font-size:26px;
+      font-weight:700;
+      letter-spacing:-0.02em;
+    }
 
-.wrap{
-max-width:980px;
-margin:0 auto;
-}
+    p.lead{
+      margin:0 0 24px;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.5;
+    }
 
-h1{
-margin:0 0 8px;
-font-size:26px;
-font-weight:700;
-}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:18px;
+      margin-bottom:20px;
+    }
 
-p.lead{
-margin:0 0 24px;
-color:var(--muted);
-font-size:16px;
-line-height:1.5;
-}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:18px;
+      box-shadow:0 4px 16px rgba(0,0,0,0.04);
+      transition:transform 0.12s ease, box-shadow 0.12s ease;
+    }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:18px;
-margin-bottom:20px;
-}
+    .card:focus-within{
+      box-shadow:0 6px 22px rgba(0,0,0,0.08);
+      transform:translateY(-1px);
+    }
 
-.card{
-background:var(--card);
-border:1px solid var(--line);
-border-radius:14px;
-padding:18px;
-box-shadow:0 4px 16px rgba(0,0,0,0.04);
-}
+    .card h2{
+      margin-top:0;
+      margin-bottom:14px;
+      font-size:18px;
+      font-weight:600;
+    }
 
-.card h2{
-margin-top:0;
-margin-bottom:14px;
-font-size:18px;
-font-weight:600;
-}
+    label{
+      display:block;
+      font-weight:600;
+      margin:12px 0 6px;
+    }
 
-label{
-display:block;
-font-weight:600;
-margin:12px 0 6px;
-}
+    .field-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+    }
 
-.field-row{
-display:grid;
-grid-template-columns:repeat(3,minmax(0,1fr));
-gap:12px;
-}
+    .field-group label{
+      margin-top:0;
+    }
 
-.field-group label{
-margin-top:0;
-}
+    input{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid #93c5fd;
+      background:var(--input);
+      font-size:16px;
+      color:var(--ink);
+      outline:none;
+      transition:border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
 
-input{
-width:100%;
-padding:12px;
-border-radius:10px;
-border:1px solid #93c5fd;
-background:var(--input);
-font-size:16px;
-outline:none;
-}
+    input:focus{
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(15,118,110,0.12);
+      background:#eef6ff;
+    }
 
-input:focus{
-border-color:var(--accent);
-box-shadow:0 0 0 3px rgba(15,118,110,0.12);
-background:#eef6ff;
-}
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button{
+      -webkit-appearance:none;
+      margin:0;
+    }
 
-.buttons{
-display:flex;
-gap:12px;
-flex-wrap:wrap;
-margin:20px 0;
-}
+    input[type="number"]{
+      -moz-appearance:textfield;
+      appearance:textfield;
+    }
 
-button{
-border:0;
-border-radius:10px;
-padding:12px 18px;
-font-size:16px;
-cursor:pointer;
-box-shadow:0 2px 8px rgba(0,0,0,0.06);
-}
+    .buttons{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin:20px 0;
+    }
 
-button:active{
-transform:scale(.98);
-}
+    button{
+      border:0;
+      border-radius:12px;
+      padding:12px 18px;
+      font-size:16px;
+      cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,0.06);
+      transition:transform 0.08s ease, opacity 0.12s ease;
+    }
 
-.primary{
-background:var(--accent);
-color:white;
-font-weight:700;
-}
+    button:hover{
+      opacity:.96;
+    }
 
-.secondary{
-background:#e5e7eb;
-}
+    button:active{
+      transform:scale(.98);
+    }
 
-.result{
-background:var(--card);
-border:1px solid var(--line);
-border-radius:14px;
-padding:20px;
-scroll-margin-top:20px;
-}
+    .primary{
+      background:var(--accent);
+      color:white;
+      font-weight:700;
+    }
 
-.result h2{
-margin-top:0;
-margin-bottom:6px;
-}
+    .secondary{
+      background:#e5e7eb;
+      color:var(--ink);
+    }
 
-.summary{
-margin:0 0 6px;
-font-size:18px;
-font-weight:800;
-color:var(--accent);
-}
+    .result{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:20px;
+      scroll-margin-top:20px;
+      transition:box-shadow 0.2s ease, transform 0.2s ease;
+    }
 
-.summary:empty{
-display:none;
-}
+    .result h2{
+      margin-top:0;
+      margin-bottom:6px;
+    }
 
-.stats{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:14px;
-margin-top:6px;
-}
+    .summary{
+      margin:0 0 6px;
+      font-size:18px;
+      font-weight:800;
+      color:var(--accent);
+      line-height:1.4;
+      min-height:0;
+    }
 
-.stat{
-border-radius:12px;
-padding:14px;
-border:1px solid var(--line);
-}
+    .summary:empty{
+      display:none;
+    }
 
-.stat.win{
-background:var(--win);
-border:2px solid #22c55e;
-transform:translateY(-2px);
-box-shadow:0 10px 22px rgba(34,197,94,0.18);
-}
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+      margin-top:6px;
+    }
 
-.stat.lose{
-background:var(--lose);
-}
+    .stat{
+      border-radius:14px;
+      padding:14px;
+      border:1px solid var(--line);
+      transition:transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
 
-.stat strong{
-display:block;
-margin-bottom:8px;
-font-size:18px;
-}
+    .stat.win{
+      background:var(--win);
+      border:2px solid #22c55e;
+      transform:translateY(-2px);
+      box-shadow:0 10px 22px rgba(34,197,94,0.18);
+    }
 
-.result-row{
-display:flex;
-justify-content:space-between;
-padding:4px 0;
-}
+    .stat.lose{
+      background:var(--lose);
+    }
 
-.result-value{
-font-weight:700;
-}
+    .stat strong{
+      display:block;
+      margin-bottom:8px;
+      font-size:18px;
+    }
 
-.formula{
-margin-top:16px;
-color:var(--muted);
-line-height:1.4;
-font-size:12px;
-}
+    .result-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:4px 0;
+    }
 
-.warning{
-color:#991b1b;
-font-weight:700;
-margin-top:10px;
-min-height:1.2em;
-}
+    .result-label{
+      text-align:left;
+    }
 
-@media (max-width:768px){
+    .result-value{
+      text-align:right;
+      font-weight:700;
+      white-space:nowrap;
+    }
 
-body{
-padding:16px;
-}
+    .stat.win .result-value{
+      color:var(--accent);
+      font-weight:800;
+    }
 
-h1{font-size:22px;}
+    .formula{
+      margin-top:16px;
+      color:var(--muted);
+      line-height:1.4;
+      font-size:12px;
+    }
 
-.field-row{
-gap:10px;
-}
+    .warning{
+      color:#991b1b;
+      font-weight:700;
+      margin-top:10px;
+      min-height:1.2em;
+    }
 
-.field-group label{
-font-size:12px;
-}
+    .flash{
+      animation:flashResult .45s ease;
+    }
 
-.buttons{
-flex-direction:column;
-}
+    @keyframes flashResult{
+      0%{transform:scale(1);box-shadow:0 0 0 rgba(15,118,110,0);}
+      50%{transform:scale(1.01);box-shadow:0 0 0 6px rgba(15,118,110,0.12);}
+      100%{transform:scale(1);box-shadow:0 0 0 rgba(15,118,110,0);}
+    }
 
-.buttons button{
-width:100%;
-}
+    @media (max-width:768px){
+      body{
+        padding:16px;
+        padding-top:max(16px,env(safe-area-inset-top));
+        padding-bottom:max(16px,env(safe-area-inset-bottom));
+        padding-left:max(16px,env(safe-area-inset-left));
+        padding-right:max(16px,env(safe-area-inset-right));
+      }
 
-}
+      h1{
+        font-size:22px;
+      }
 
-</style>
+      .field-row{
+        grid-template-columns:repeat(3,minmax(0,1fr));
+        gap:10px;
+      }
+
+      .field-group label{
+        font-size:12px;
+      }
+
+      input{
+        padding:10px;
+      }
+
+      .buttons{
+        flex-direction:column;
+      }
+
+      .buttons button{
+        width:100%;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="wrap">
+  <div class="wrap">
+    <h1>Drink Value Calculator</h1>
+    <p class="lead">Are you a cheap bastard? Do you want to know which drink gets you more value for money?</p>
 
-<h1>Drink Value Calculator</h1>
-<p class="lead">Are you a cheap bastard? Do you want to know which drink gets you more value for money?</p>
+    <div class="grid">
 
-<div class="grid">
+      <div class="card">
+        <h2>Drink 1</h2>
 
-<div class="card">
-<h2>Drink 1</h2>
+        <div class="field-row">
+          <div class="field-group">
+            <label for="volume1">Volume (ml)</label>
+            <input id="volume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="375">
+          </div>
 
-<div class="field-row">
+          <div class="field-group">
+            <label for="abv1">Alcohol %</label>
+            <input id="abv1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="4.5">
+          </div>
 
-<div class="field-group">
-<label>Volume (ml)</label>
-<input id="volume1" type="number" placeholder="375">
-</div>
+          <div class="field-group">
+            <label for="price1">Price ($)</label>
+            <input id="price1" type="number" inputmode="decimal" enterkeyhint="next" step="0.01" placeholder="6.00">
+          </div>
+        </div>
+      </div>
 
-<div class="field-group">
-<label>Alcohol %</label>
-<input id="abv1" type="number" placeholder="4.5">
-</div>
+      <div class="card">
+        <h2>Drink 2</h2>
 
-<div class="field-group">
-<label>Price ($)</label>
-<input id="price1" type="number" placeholder="6.00">
-</div>
+        <div class="field-row">
+          <div class="field-group">
+            <label for="volume2">Volume (ml)</label>
+            <input id="volume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="330">
+          </div>
 
-</div>
-</div>
+          <div class="field-group">
+            <label for="abv2">Alcohol %</label>
+            <input id="abv2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="7">
+          </div>
 
-<div class="card">
-<h2>Drink 2</h2>
+          <div class="field-group">
+            <label for="price2">Price ($)</label>
+            <input id="price2" type="number" inputmode="decimal" enterkeyhint="done" step="0.01" placeholder="8.00">
+          </div>
+        </div>
+      </div>
 
-<div class="field-row">
+    </div>
 
-<div class="field-group">
-<label>Volume (ml)</label>
-<input id="volume2" type="number" placeholder="330">
-</div>
+    <div class="buttons">
+      <button class="primary" id="compareBtn" type="button">Compare</button>
+      <button class="secondary" id="clearBtn" type="button">Clear</button>
+    </div>
 
-<div class="field-group">
-<label>Alcohol %</label>
-<input id="abv2" type="number" placeholder="7">
-</div>
+    <div class="result" id="resultBox">
+      <h2>Result</h2>
 
-<div class="field-group">
-<label>Price ($)</label>
-<input id="price2" type="number" placeholder="8.00">
-</div>
+      <div class="summary" id="summary"></div>
+      <div id="warning" class="warning"></div>
 
-</div>
-</div>
+      <div class="stats">
 
-</div>
+        <div class="stat" id="stat1">
+          <strong>Drink 1</strong>
 
-<div class="buttons">
-<button class="primary" id="compareBtn">Compare</button>
-<button class="secondary" id="clearBtn">Clear</button>
-</div>
+          <div class="result-row">
+            <span class="result-label">Standard drinks</span>
+            <span class="result-value" id="drink1Std">-</span>
+          </div>
 
-<div class="result" id="resultBox">
+          <div class="result-row">
+            <span class="result-label">Standard drinks per $</span>
+            <span class="result-value" id="drink1Value">-</span>
+          </div>
+        </div>
 
-<h2>Result</h2>
+        <div class="stat" id="stat2">
+          <strong>Drink 2</strong>
 
-<div class="summary" id="summary"></div>
-<div id="warning" class="warning"></div>
+          <div class="result-row">
+            <span class="result-label">Standard drinks</span>
+            <span class="result-value" id="drink2Std">-</span>
+          </div>
 
-<div class="stats">
+          <div class="result-row">
+            <span class="result-label">Standard drinks per $</span>
+            <span class="result-value" id="drink2Value">-</span>
+          </div>
+        </div>
 
-<div class="stat" id="stat1">
-<strong>Drink 1</strong>
+      </div>
 
-<div class="result-row">
-<span>Standard drinks</span>
-<span class="result-value" id="drink1Std">-</span>
-</div>
+      <div class="formula">
+        <div><strong>Formula:</strong></div>
+        <div>Grams of alcohol = Volume × (Alcohol % ÷ 100) × 0.789</div>
+        <div>Standard drinks = Grams ÷ 10</div>
+        <div>Standard drinks per $ = Standard drinks ÷ Price</div>
+      </div>
+    </div>
 
-<div class="result-row">
-<span>Standard drinks per $</span>
-<span class="result-value" id="drink1Value">-</span>
-</div>
+  </div>
 
-</div>
+  <script>
+    const fields = {
+      volume1: document.getElementById('volume1'),
+      abv1: document.getElementById('abv1'),
+      price1: document.getElementById('price1'),
+      volume2: document.getElementById('volume2'),
+      abv2: document.getElementById('abv2'),
+      price2: document.getElementById('price2')
+    };
 
-<div class="stat" id="stat2">
-<strong>Drink 2</strong>
+    const summary = document.getElementById('summary');
+    const warning = document.getElementById('warning');
 
-<div class="result-row">
-<span>Standard drinks</span>
-<span class="result-value" id="drink2Std">-</span>
-</div>
+    const stat1 = document.getElementById('stat1');
+    const stat2 = document.getElementById('stat2');
 
-<div class="result-row">
-<span>Standard drinks per $</span>
-<span class="result-value" id="drink2Value">-</span>
-</div>
+    const drink1Std = document.getElementById('drink1Std');
+    const drink1Value = document.getElementById('drink1Value');
+    const drink2Std = document.getElementById('drink2Std');
+    const drink2Value = document.getElementById('drink2Value');
 
-</div>
+    const resultBox = document.getElementById('resultBox');
 
-</div>
+    function num(v) {
+      return Number(v);
+    }
 
-<div class="formula">
-<div><strong>Formula:</strong></div>
-<div>Grams alcohol = Volume × (Alcohol % ÷ 100) × 0.789</div>
-<div>Standard drinks = Grams ÷ 10</div>
-<div>Standard drinks per $ = Standard drinks ÷ Price</div>
-</div>
+    function format(v) {
+      return Number(v).toFixed(2);
+    }
 
-</div>
+    function reset() {
+      stat1.className = 'stat';
+      stat2.className = 'stat';
+      warning.textContent = '';
+      drink1Std.textContent = '-';
+      drink1Value.textContent = '-';
+      drink2Std.textContent = '-';
+      drink2Value.textContent = '-';
+    }
 
-</div>
+    function calculate(volume, abv, price) {
+      const grams = volume * (abv / 100) * 0.789;
+      const std = grams / 10;
 
-<script>
+      return {
+        std,
+        value: std / price
+      };
+    }
 
-const fields={
-volume1:document.getElementById('volume1'),
-abv1:document.getElementById('abv1'),
-price1:document.getElementById('price1'),
-volume2:document.getElementById('volume2'),
-abv2:document.getElementById('abv2'),
-price2:document.getElementById('price2')
-};
+    function compare() {
+      reset();
 
-const summary=document.getElementById('summary');
-const warning=document.getElementById('warning');
+      const v1 = num(fields.volume1.value);
+      const a1 = num(fields.abv1.value);
+      const p1 = num(fields.price1.value);
 
-const stat1=document.getElementById('stat1');
-const stat2=document.getElementById('stat2');
+      const v2 = num(fields.volume2.value);
+      const a2 = num(fields.abv2.value);
+      const p2 = num(fields.price2.value);
 
-const drink1Std=document.getElementById('drink1Std');
-const drink1Value=document.getElementById('drink1Value');
-const drink2Std=document.getElementById('drink2Std');
-const drink2Value=document.getElementById('drink2Value');
+      if (!v1 || !a1 || !p1 || !v2 || !a2 || !p2) {
+        summary.textContent = 'Enter all values first.';
+        return;
+      }
 
-const resultBox=document.getElementById('resultBox');
+      const d1 = calculate(v1, a1, p1);
+      const d2 = calculate(v2, a2, p2);
 
-function num(v){return Number(v);}
-function format(v){return Number(v).toFixed(2);}
+      drink1Std.textContent = format(d1.std);
+      drink1Value.textContent = format(d1.value);
 
-function reset(){
-stat1.className='stat';
-stat2.className='stat';
-warning.textContent='';
-drink1Std.textContent='-';
-drink1Value.textContent='-';
-drink2Std.textContent='-';
-drink2Value.textContent='-';
-}
+      drink2Std.textContent = format(d2.std);
+      drink2Value.textContent = format(d2.value);
 
-function calculate(volume,abv,price){
-const grams=volume*(abv/100)*0.789;
-const std=grams/10;
-return{
-std,
-value:std/price
-};
-}
+      if (d1.value > d2.value) {
+        summary.textContent = 'Drink 1 is better value.';
+        stat1.classList.add('win');
+        stat2.classList.add('lose');
+      } else if (d2.value > d1.value) {
+        summary.textContent = 'Drink 2 is better value.';
+        stat2.classList.add('win');
+        stat1.classList.add('lose');
+      } else {
+        summary.textContent = "It's a tie.";
+      }
 
-function compare(){
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
-reset();
+    function clearAll() {
+      Object.values(fields).forEach(f => f.value = '');
+      reset();
+      summary.textContent = '';
+    }
 
-const v1=num(fields.volume1.value);
-const a1=num(fields.abv1.value);
-const p1=num(fields.price1.value);
-
-const v2=num(fields.volume2.value);
-const a2=num(fields.abv2.value);
-const p2=num(fields.price2.value);
-
-if(!v1||!a1||!p1||!v2||!a2||!p2){
-summary.textContent="Enter all values first.";
-return;
-}
-
-const d1=calculate(v1,a1,p1);
-const d2=calculate(v2,a2,p2);
-
-drink1Std.textContent=format(d1.std);
-drink1Value.textContent=format(d1.value);
-
-drink2Std.textContent=format(d2.std);
-drink2Value.textContent=format(d2.value);
-
-if(d1.value>d2.value){
-summary.textContent="Drink 1 is better value.";
-stat1.classList.add('win');
-stat2.classList.add('lose');
-}
-else if(d2.value>d1.value){
-summary.textContent="Drink 2 is better value.";
-stat2.classList.add('win');
-stat1.classList.add('lose');
-}
-else{
-summary.textContent="It's a tie.";
-}
-
-resultBox.scrollIntoView({behavior:'smooth'});
-
-}
-
-function clearAll(){
-Object.values(fields).forEach(f=>f.value="");
-reset();
-summary.textContent="";
-}
-
-document.getElementById('compareBtn').addEventListener('click',compare);
-document.getElementById('clearBtn').addEventListener('click',clearAll);
-
-</script>
+    document.getElementById('compareBtn').addEventListener('click', compare);
+    document.getElementById('clearBtn').addEventListener('click', clearAll);
+  </script>
 
 </body>
 </html>
