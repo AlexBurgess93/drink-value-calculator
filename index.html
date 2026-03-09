@@ -508,11 +508,6 @@
           </div>
 
           <div class="result-row">
-            <span class="result-label">Price per gram alcohol</span>
-            <span class="result-value" id="drink1PriceGram">-</span>
-          </div>
-
-          <div class="result-row">
             <span class="result-label">Drinks to ~0.05 BAC</span>
             <span class="result-value" id="drink1ToLimit">-</span>
           </div>
@@ -544,11 +539,6 @@
           </div>
 
           <div class="result-row">
-            <span class="result-label">Price per gram alcohol</span>
-            <span class="result-value" id="drink2PriceGram">-</span>
-          </div>
-
-          <div class="result-row">
             <span class="result-label">Drinks to ~0.05 BAC</span>
             <span class="result-value" id="drink2ToLimit">-</span>
           </div>
@@ -556,18 +546,18 @@
 
       </div>
 
-      <div class="formula">
+      <!--<div class="formula">
         <div><strong>Formula:</strong></div>
         <div>Grams of alcohol = Volume × (Alcohol % ÷ 100) × 0.789</div>
         <div>Standard drinks = Grams of alcohol ÷ 10</div>
         <div>Cost per standard drink = Price ÷ Standard drinks</div>
         <div>Cost per litre = Price ÷ (Volume ÷ 1000)</div>
-        <div>Price per gram alcohol = Price ÷ Grams of alcohol</div>
-      </div>
+      </div>-->
 
       <div class="disclaimer">
-        Drinks to ~0.05 BAC is a rough estimate only, based on ~2.5 standard drinks.
-        Real BAC depends on body size, sex, food, time, and metabolism. If you use this to decide if you can drive, you're an 1D10T m8.
+        Drinks to ~0.05 BAC is a rough estimate only, based on ~2.5 standard drinks.<br>
+        Real BAC depends on body size, sex, food, time, and metabolism.<br>
+        Needless to say, if you rely on this to decide if driving is a good idea, you're an 1D10T m8.
       </div>
     </div>
 
@@ -603,14 +593,12 @@
     const drink1CostStd = document.getElementById('drink1CostStd');
     const drink1CostLitre = document.getElementById('drink1CostLitre');
     const drink1Mass = document.getElementById('drink1Mass');
-    const drink1PriceGram = document.getElementById('drink1PriceGram');
     const drink1ToLimit = document.getElementById('drink1ToLimit');
 
     const drink2Std = document.getElementById('drink2Std');
     const drink2CostStd = document.getElementById('drink2CostStd');
     const drink2CostLitre = document.getElementById('drink2CostLitre');
     const drink2Mass = document.getElementById('drink2Mass');
-    const drink2PriceGram = document.getElementById('drink2PriceGram');
     const drink2ToLimit = document.getElementById('drink2ToLimit');
 
     function calc(v, a, p) {
@@ -622,7 +610,6 @@
         std,
         costStd: p / std,
         costL: p / (v / 1000),
-        pricePerGram: p / grams,
         limit: LIMIT / std
       };
     }
@@ -643,14 +630,12 @@
       drink1CostStd.textContent = '-';
       drink1CostLitre.textContent = '-';
       drink1Mass.textContent = '-';
-      drink1PriceGram.textContent = '-';
       drink1ToLimit.textContent = '-';
 
       drink2Std.textContent = '-';
       drink2CostStd.textContent = '-';
       drink2CostLitre.textContent = '-';
       drink2Mass.textContent = '-';
-      drink2PriceGram.textContent = '-';
       drink2ToLimit.textContent = '-';
     }
 
@@ -695,14 +680,12 @@
       drink1CostStd.textContent = '$' + d1.costStd.toFixed(2);
       drink1CostLitre.textContent = '$' + d1.costL.toFixed(2);
       drink1Mass.textContent = d1.grams.toFixed(2) + ' g';
-      drink1PriceGram.textContent = '$' + d1.pricePerGram.toFixed(2);
       drink1ToLimit.textContent = d1.limit.toFixed(2);
 
       drink2Std.textContent = d2.std.toFixed(2);
       drink2CostStd.textContent = '$' + d2.costStd.toFixed(2);
       drink2CostLitre.textContent = '$' + d2.costL.toFixed(2);
       drink2Mass.textContent = d2.grams.toFixed(2) + ' g';
-      drink2PriceGram.textContent = '$' + d2.pricePerGram.toFixed(2);
       drink2ToLimit.textContent = d2.limit.toFixed(2);
 
       if (d1.costStd < d2.costStd) {
