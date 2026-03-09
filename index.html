@@ -275,7 +275,7 @@
     .stat strong{
       display:flex;
       align-items:center;
-      margin-bottom:8px;
+      margin-bottom:6px;
       font-size:18px;
       position:relative;
       z-index:1;
@@ -292,6 +292,27 @@
 
     .stat.win .trophy{
       display:inline-block;
+    }
+
+    .drink-meta{
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:8px;
+      line-height:1.3;
+      position:relative;
+      z-index:1;
+    }
+
+    .drink-meta:empty{
+      display:none;
+    }
+
+    .stat-divider{
+      height:1px;
+      background:linear-gradient(to right, rgba(17,24,39,0.10), rgba(17,24,39,0.04));
+      margin:0 0 8px;
+      position:relative;
+      z-index:1;
     }
 
     .result-row{
@@ -454,6 +475,8 @@
 
         <div class="stat" id="stat1">
           <strong>Drink 1 <span class="trophy" aria-hidden="true">🏆</span></strong>
+          <div class="drink-meta" id="drink1Meta"></div>
+          <div class="stat-divider"></div>
 
           <div class="result-row">
             <span class="result-label">Standard drinks</span>
@@ -478,6 +501,8 @@
 
         <div class="stat" id="stat2">
           <strong>Drink 2 <span class="trophy" aria-hidden="true">🏆</span></strong>
+          <div class="drink-meta" id="drink2Meta"></div>
+          <div class="stat-divider"></div>
 
           <div class="result-row">
             <span class="result-label">Standard drinks</span>
@@ -509,7 +534,7 @@
       </div>
 
       <div class="disclaimer">
-        Drinks to ~0.05 BAC is a rough estimate based on ~2.5 standard drinks. If you rely on this to know if you can drive, you're an ID10T.
+        Drinks to ~0.05 BAC is a rough estimate based on ~2.5 standard drinks.
       </div>
     </div>
 
@@ -538,6 +563,9 @@
     const stat1 = document.getElementById('stat1');
     const stat2 = document.getElementById('stat2');
 
+    const drink1Meta = document.getElementById('drink1Meta');
+    const drink2Meta = document.getElementById('drink2Meta');
+
     const drink1Std = document.getElementById('drink1Std');
     const drink1CostStd = document.getElementById('drink1CostStd');
     const drink1CostLitre = document.getElementById('drink1CostLitre');
@@ -560,10 +588,17 @@
       };
     }
 
+    function formatInputPrice(value) {
+      return Number.isInteger(value) ? `$${value}` : `$${value.toFixed(2)}`;
+    }
+
     function resetResults() {
       stat1.classList.remove('win');
       stat2.classList.remove('win');
       warning.textContent = '';
+
+      drink1Meta.textContent = '';
+      drink2Meta.textContent = '';
 
       drink1Std.textContent = '-';
       drink1CostStd.textContent = '-';
@@ -599,6 +634,9 @@
         resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
+
+      drink1Meta.textContent = `Vol: ${v1}ml - Alc %: ${a1} - Price: ${formatInputPrice(p1)}`;
+      drink2Meta.textContent = `Vol: ${v2}ml - Alc %: ${a2} - Price: ${formatInputPrice(p2)}`;
 
       const d1 = calc(v1, a1, p1);
       const d2 = calc(v2, a2, p2);
