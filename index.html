@@ -18,644 +18,429 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#f3f4f6;
-      --card:#ffffff;
-      --ink:#111827;
-      --muted:#6b7280;
-      --line:#d1d5db;
-      --accent:#0f766e;
-      --accent-strong:#0b5f59;
-      --input:#dbeafe;
-      --win:#dcfce7;
-    }
+<style>
+:root{
+--bg:#f3f4f6;
+--card:#ffffff;
+--ink:#111827;
+--muted:#6b7280;
+--line:#d1d5db;
+--accent:#0f766e;
+--accent-strong:#0b5f59;
+--input:#dbeafe;
+--win:#dcfce7;
+}
 
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 
-    html,body{
-      margin:0;
-      padding:0;
-      scroll-behavior:smooth;
-    }
+html,body{margin:0;padding:0;scroll-behavior:smooth;}
 
-    body{
-      font-family:'Inter',system-ui,-apple-system,sans-serif;
-      background:var(--bg);
-      color:var(--ink);
-      padding:24px;
-      padding-top:max(24px,env(safe-area-inset-top));
-      padding-bottom:max(24px,env(safe-area-inset-bottom));
-      padding-left:max(24px,env(safe-area-inset-left));
-      padding-right:max(24px,env(safe-area-inset-right));
-    }
+body{
+font-family:'Inter',system-ui,-apple-system,sans-serif;
+background:var(--bg);
+color:var(--ink);
+padding:24px;
+}
 
-    .wrap{
-      max-width:980px;
-      margin:0 auto;
-    }
+.wrap{max-width:980px;margin:0 auto;}
 
-    h1{
-      margin:0 0 6px;
-      font-size:26px;
-      font-weight:700;
-      letter-spacing:-0.02em;
-    }
+h1{
+margin:0 0 6px;
+font-size:26px;
+font-weight:700;
+letter-spacing:-0.02em;
+}
 
-    p.lead{
-      margin:0 0 24px;
-      color:var(--muted);
-      font-size:16px;
-      line-height:1.5;
-    }
+p.lead{
+margin:0 0 24px;
+color:var(--muted);
+font-size:16px;
+line-height:1.5;
+}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:18px;
-      margin-bottom:18px;
-    }
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:18px;
+margin-bottom:18px;
+}
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:16px;
-      padding:18px;
-      box-shadow:0 4px 16px rgba(0,0,0,0.04);
-      transition:transform 0.12s ease, box-shadow 0.12s ease;
-    }
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:16px;
+padding:18px;
+box-shadow:0 4px 16px rgba(0,0,0,0.04);
+}
 
-    .card:focus-within{
-      box-shadow:0 6px 22px rgba(0,0,0,0.08);
-      transform:translateY(-1px);
-    }
+.card h2{
+margin-top:0;
+margin-bottom:14px;
+font-size:18px;
+font-weight:600;
+}
 
-    .card h2{
-      margin-top:0;
-      margin-bottom:14px;
-      font-size:18px;
-      font-weight:600;
-    }
+label{
+display:block;
+font-weight:600;
+margin:12px 0 6px;
+}
 
-    label{
-      display:block;
-      font-weight:600;
-      margin:12px 0 6px;
-    }
+.field-row{
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:12px;
+}
 
-    .field-row{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-    }
+input{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #93c5fd;
+background:var(--input);
+font-size:16px;
+outline:none;
+}
 
-    .field-group label{
-      margin-top:0;
-    }
+.actions{margin-bottom:20px;}
 
-    input{
-      width:100%;
-      padding:12px;
-      border-radius:12px;
-      border:1px solid #93c5fd;
-      background:var(--input);
-      font-size:16px;
-      color:var(--ink);
-      outline:none;
-      transition:border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    }
+.primary{
+border:0;
+background:var(--accent);
+color:white;
+font-weight:700;
+padding:12px 18px;
+border-radius:12px;
+cursor:pointer;
+}
 
-    input:focus{
-      border-color:var(--accent);
-      box-shadow:0 0 0 3px rgba(15,118,110,0.12);
-      background:#eef6ff;
-    }
+.result{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:18px;
+padding:20px;
+box-shadow:0 10px 28px rgba(17,24,39,0.06);
+}
 
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button{
-      -webkit-appearance:none;
-      margin:0;
-    }
+.result h2{
+margin:0 0 6px;
+font-size:18px;
+font-weight:700;
+}
 
-    input[type="number"]{
-      -moz-appearance:textfield;
-      appearance:textfield;
-    }
+.summary{
+margin:0 0 6px;
+font-size:18px;
+font-weight:800;
+color:var(--accent);
+}
 
-    .actions{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      margin:0 0 22px;
-      padding-top:2px;
-    }
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:14px;
+margin-top:6px;
+}
 
-    button{
-      border-radius:12px;
-      padding:12px 18px;
-      font-size:16px;
-      cursor:pointer;
-      transition:transform 0.08s ease, opacity 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-    }
+.stat{
+border-radius:14px;
+padding:14px;
+border:1px solid var(--line);
+background:#fff;
+}
 
-    button:hover{
-      opacity:.96;
-    }
+.stat.win{
+background:linear-gradient(180deg,#f4fff9 0%,var(--win) 100%);
+border:2px solid #22c55e;
+box-shadow:0 10px 22px rgba(34,197,94,0.18);
+}
 
-    button:active{
-      transform:scale(.98);
-    }
+.stat strong{
+display:flex;
+align-items:center;
+gap:6px;
+margin-bottom:8px;
+font-size:18px;
+}
 
-    .primary{
-      border:0;
-      background:var(--accent);
-      color:white;
-      font-weight:700;
-      box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    }
+.trophy{display:none;}
+.stat.win .trophy{display:inline-block;}
 
-    .primary:hover{
-      background:var(--accent-strong);
-    }
+.result-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+padding:3px 0;
+font-size:14px;
+}
 
-    .secondary{
-      border:1px solid var(--line);
-      background:transparent;
-      color:var(--muted);
-      font-weight:600;
-      box-shadow:none;
-    }
+.result-label{
+text-align:left;
+color:var(--muted);
+font-weight:500;
+}
 
-    .secondary:hover{
-      color:var(--ink);
-      background:rgba(255,255,255,0.6);
-    }
+.result-value{
+text-align:right;
+font-weight:700;
+font-variant-numeric:tabular-nums;
+letter-spacing:0.02em;
+}
 
-    .result{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:20px;
-      scroll-margin-top:20px;
-      box-shadow:0 10px 28px rgba(17,24,39,0.06);
-      position:relative;
-    }
+.stat.win .result-value{
+color:var(--accent);
+font-weight:800;
+}
 
-    .result::before{
-      content:"";
-      display:block;
-      height:1px;
-      background:linear-gradient(to right, transparent, rgba(17,24,39,0.08), transparent);
-      margin-bottom:14px;
-    }
+.formula{
+margin-top:16px;
+color:var(--muted);
+line-height:1.4;
+font-size:12px;
+}
 
-    .result h2{
-      margin:0 0 6px;
-      font-size:18px;
-      font-weight:700;
-      letter-spacing:-0.01em;
-    }
+.disclaimer{
+margin-top:10px;
+color:var(--muted);
+line-height:1.4;
+font-size:11px;
+}
 
-    .summary{
-      margin:0 0 6px;
-      font-size:18px;
-      font-weight:800;
-      color:var(--accent);
-      line-height:1.4;
-      min-height:1.4em;
-    }
+.bottom-actions{
+margin-top:16px;
+display:flex;
+justify-content:center;
+}
 
-    .stats{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:14px;
-      margin-top:6px;
-    }
-
-    .stat{
-      border-radius:14px;
-      padding:14px;
-      border:1px solid var(--line);
-      background:#fff;
-      transition:transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .stat.win{
-      background:linear-gradient(180deg, #f4fff9 0%, var(--win) 100%);
-      border:2px solid #22c55e;
-      transform:translateY(-2px);
-      box-shadow:
-        0 10px 22px rgba(34,197,94,0.18),
-        inset 0 1px 0 rgba(255,255,255,0.8);
-    }
-
-    .stat strong{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      margin-bottom:8px;
-      font-size:18px;
-    }
-
-    .trophy{
-      display:none;
-      font-size:16px;
-      line-height:1;
-    }
-
-    .stat.win .trophy{
-      display:inline-block;
-    }
-
-    .result-row{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      padding:3px 0;
-      font-size:14px;
-    }
-
-    .result-label{
-      text-align:left;
-      color:var(--muted);
-      font-weight:500;
-    }
-
-    .result-value{
-      text-align:right;
-      font-weight:700;
-      white-space:nowrap;
-      font-variant-numeric:tabular-nums;
-      letter-spacing:0.02em;
-    }
-
-    .stat.win .result-value{
-      color:var(--accent);
-      font-weight:800;
-    }
-
-    .formula{
-      margin-top:16px;
-      color:var(--muted);
-      line-height:1.4;
-      font-size:12px;
-    }
-
-    .warning{
-      color:#991b1b;
-      font-weight:700;
-      margin-top:10px;
-      min-height:1.2em;
-    }
-
-    .disclaimer{
-      margin-top:10px;
-      color:var(--muted);
-      line-height:1.4;
-      font-size:11px;
-    }
-
-    .bottom-actions{
-      margin-top:16px;
-      display:flex;
-      justify-content:center;
-    }
-
-    @media (max-width:768px){
-      body{
-        padding:16px;
-        padding-top:max(16px,env(safe-area-inset-top));
-        padding-bottom:max(16px,env(safe-area-inset-bottom));
-        padding-left:max(16px,env(safe-area-inset-left));
-        padding-right:max(16px,env(safe-area-inset-right));
-      }
-
-      h1{
-        font-size:22px;
-      }
-
-      .field-row{
-        grid-template-columns:repeat(3,minmax(0,1fr));
-        gap:10px;
-      }
-
-      .field-group label{
-        font-size:12px;
-      }
-
-      input{
-        padding:10px;
-      }
-
-      .actions{
-        flex-direction:column;
-      }
-
-      .actions button{
-        width:100%;
-      }
-
-      .bottom-actions{
-        justify-content:stretch;
-      }
-
-      .bottom-actions button{
-        width:100%;
-      }
-    }
-  </style>
+.secondary{
+border:1px solid var(--line);
+background:transparent;
+color:var(--muted);
+font-weight:600;
+padding:12px 18px;
+border-radius:12px;
+cursor:pointer;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="wrap">
-    <h1>Drink Value Calculator</h1>
-    <p class="lead">Are you a cheap bastard? Do you want to know which drink gets you more value for money?</p>
+<div class="wrap">
+<h1>Drink Value Calculator</h1>
+<p class="lead">Are you a cheap bastard? Do you want to know which drink gets you more value for money?</p>
 
-    <div class="grid">
+<div class="grid">
 
-      <div class="card">
-        <h2>Drink 1</h2>
+<div class="card">
+<h2>Drink 1</h2>
+<div class="field-row">
+<div>
+<label>Volume (ml)</label>
+<input id="volume1" type="number" inputmode="decimal" step="0.1" placeholder="375">
+</div>
+<div>
+<label>Alcohol %</label>
+<input id="abv1" type="number" inputmode="decimal" step="0.1" placeholder="4.5">
+</div>
+<div>
+<label>Price ($)</label>
+<input id="price1" type="number" inputmode="decimal" step="0.01" placeholder="6.00">
+</div>
+</div>
+</div>
 
-        <div class="field-row">
-          <div class="field-group">
-            <label for="volume1">Volume (ml)</label>
-            <input id="volume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="375">
-          </div>
+<div class="card">
+<h2>Drink 2</h2>
+<div class="field-row">
+<div>
+<label>Volume (ml)</label>
+<input id="volume2" type="number" inputmode="decimal" step="0.1" placeholder="330">
+</div>
+<div>
+<label>Alcohol %</label>
+<input id="abv2" type="number" inputmode="decimal" step="0.1" placeholder="7">
+</div>
+<div>
+<label>Price ($)</label>
+<input id="price2" type="number" inputmode="decimal" step="0.01" placeholder="8.00">
+</div>
+</div>
+</div>
 
-          <div class="field-group">
-            <label for="abv1">Alcohol %</label>
-            <input id="abv1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="4.5">
-          </div>
+</div>
 
-          <div class="field-group">
-            <label for="price1">Price ($)</label>
-            <input id="price1" type="number" inputmode="decimal" enterkeyhint="next" step="0.01" placeholder="6.00">
-          </div>
-        </div>
-      </div>
+<div class="actions">
+<button class="primary" id="compareBtn">Compare</button>
+</div>
 
-      <div class="card">
-        <h2>Drink 2</h2>
+<div class="result" id="resultBox">
+<h2>Result</h2>
+<div class="summary" id="summary">Compare two drinks</div>
 
-        <div class="field-row">
-          <div class="field-group">
-            <label for="volume2">Volume (ml)</label>
-            <input id="volume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="330">
-          </div>
+<div class="stats">
 
-          <div class="field-group">
-            <label for="abv2">Alcohol %</label>
-            <input id="abv2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="7">
-          </div>
+<div class="stat" id="stat1">
+<strong>Drink 1 <span class="trophy">🏆</span></strong>
 
-          <div class="field-group">
-            <label for="price2">Price ($)</label>
-            <input id="price2" type="number" inputmode="decimal" enterkeyhint="done" step="0.01" placeholder="8.00">
-          </div>
-        </div>
-      </div>
+<div class="result-row">
+<span class="result-label">Standard drinks</span>
+<span class="result-value" id="drink1Std">-</span>
+</div>
 
-    </div>
+<div class="result-row">
+<span class="result-label">Cost per standard drink</span>
+<span class="result-value" id="drink1CostStd">-</span>
+</div>
 
-    <div class="actions">
-      <button class="primary" id="compareBtn" type="button">Compare</button>
-    </div>
+<div class="result-row">
+<span class="result-label">Cost per litre</span>
+<span class="result-value" id="drink1CostLitre">-</span>
+</div>
 
-    <div class="result" id="resultBox">
-      <h2>Result</h2>
+<div class="result-row">
+<span class="result-label">Drinks to ~0.05 BAC</span>
+<span class="result-value" id="drink1ToLimit">-</span>
+</div>
 
-      <div class="summary" id="summary">Compare two drinks</div>
-      <div id="warning" class="warning"></div>
+</div>
 
-      <div class="stats">
+<div class="stat" id="stat2">
+<strong>Drink 2 <span class="trophy">🏆</span></strong>
 
-        <div class="stat" id="stat1">
-          <strong>Drink 1 <span class="trophy" aria-hidden="true">🏆</span></strong>
+<div class="result-row">
+<span class="result-label">Standard drinks</span>
+<span class="result-value" id="drink2Std">-</span>
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Standard drinks</span>
-            <span class="result-value" id="drink1Std">-</span>
-          </div>
+<div class="result-row">
+<span class="result-label">Cost per standard drink</span>
+<span class="result-value" id="drink2CostStd">-</span>
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Standard drinks per $</span>
-            <span class="result-value" id="drink1Value">-</span>
-          </div>
+<div class="result-row">
+<span class="result-label">Cost per litre</span>
+<span class="result-value" id="drink2CostLitre">-</span>
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Cost per standard drink</span>
-            <span class="result-value" id="drink1CostStd">-</span>
-          </div>
+<div class="result-row">
+<span class="result-label">Drinks to ~0.05 BAC</span>
+<span class="result-value" id="drink2ToLimit">-</span>
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Cost per litre</span>
-            <span class="result-value" id="drink1CostLitre">-</span>
-          </div>
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Drinks to ~0.05 BAC</span>
-            <span class="result-value" id="drink1ToLimit">-</span>
-          </div>
-        </div>
+</div>
 
-        <div class="stat" id="stat2">
-          <strong>Drink 2 <span class="trophy" aria-hidden="true">🏆</span></strong>
+<div class="formula">
+Standard drinks = Volume × (Alcohol % ÷ 100) × 0.789 ÷ 10  
+Cost per standard drink = Price ÷ Standard drinks  
+Cost per litre = Price ÷ (Volume ÷ 1000)
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Standard drinks</span>
-            <span class="result-value" id="drink2Std">-</span>
-          </div>
+<div class="disclaimer">
+Drinks to ~0.05 BAC is a rough estimate only based on ~2.5 standard drinks.
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Standard drinks per $</span>
-            <span class="result-value" id="drink2Value">-</span>
-          </div>
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Cost per standard drink</span>
-            <span class="result-value" id="drink2CostStd">-</span>
-          </div>
+<div class="bottom-actions">
+<button class="secondary" id="resetBtn">Reset</button>
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Cost per litre</span>
-            <span class="result-value" id="drink2CostLitre">-</span>
-          </div>
+</div>
 
-          <div class="result-row">
-            <span class="result-label">Drinks to ~0.05 BAC</span>
-            <span class="result-value" id="drink2ToLimit">-</span>
-          </div>
-        </div>
+<script>
 
-      </div>
+const LIMIT = 2.5;
 
-      <div class="formula">
-        <div><strong>Formula:</strong></div>
-        <div>Standard drinks = Volume × (Alcohol % ÷ 100) × 0.789 ÷ 10</div>
-        <div>Standard drinks per $ = Standard drinks ÷ Price</div>
-        <div>Cost per standard drink = Price ÷ Standard drinks</div>
-        <div>Cost per litre = Price ÷ (Volume ÷ 1000)</div>
-      </div>
+const fields={
+volume1:document.getElementById('volume1'),
+abv1:document.getElementById('abv1'),
+price1:document.getElementById('price1'),
+volume2:document.getElementById('volume2'),
+abv2:document.getElementById('abv2'),
+price2:document.getElementById('price2')
+};
 
-      <div class="disclaimer">
-        Drinks to ~0.05 BAC is a rough estimate only, based on ~2.5 standard drinks.
-        Real BAC depends on body size, sex, food, time, and metabolism.
-      </div>
-    </div>
+const summary=document.getElementById('summary');
+const stat1=document.getElementById('stat1');
+const stat2=document.getElementById('stat2');
 
-    <div class="bottom-actions">
-      <button class="secondary" id="resetBtn" type="button">Reset</button>
-    </div>
+function calc(volume,abv,price){
 
-  </div>
+const grams=volume*(abv/100)*0.789;
+const std=grams/10;
 
-  <script>
-    const ROUGH_STANDARD_DRINKS_TO_005 = 2.5;
+return{
+std,
+costPerStd:price/std,
+costPerLitre:price/(volume/1000),
+toLimit:LIMIT/std
+};
+}
 
-    const fields = {
-      volume1: document.getElementById('volume1'),
-      abv1: document.getElementById('abv1'),
-      price1: document.getElementById('price1'),
-      volume2: document.getElementById('volume2'),
-      abv2: document.getElementById('abv2'),
-      price2: document.getElementById('price2')
-    };
+function compare(){
 
-    const summary = document.getElementById('summary');
-    const warning = document.getElementById('warning');
+stat1.classList.remove('win');
+stat2.classList.remove('win');
 
-    const stat1 = document.getElementById('stat1');
-    const stat2 = document.getElementById('stat2');
+const v1=+fields.volume1.value;
+const a1=+fields.abv1.value;
+const p1=+fields.price1.value;
 
-    const drink1Std = document.getElementById('drink1Std');
-    const drink1Value = document.getElementById('drink1Value');
-    const drink1CostStd = document.getElementById('drink1CostStd');
-    const drink1CostLitre = document.getElementById('drink1CostLitre');
-    const drink1ToLimit = document.getElementById('drink1ToLimit');
+const v2=+fields.volume2.value;
+const a2=+fields.abv2.value;
+const p2=+fields.price2.value;
 
-    const drink2Std = document.getElementById('drink2Std');
-    const drink2Value = document.getElementById('drink2Value');
-    const drink2CostStd = document.getElementById('drink2CostStd');
-    const drink2CostLitre = document.getElementById('drink2CostLitre');
-    const drink2ToLimit = document.getElementById('drink2ToLimit');
+if(!v1||!a1||!p1||!v2||!a2||!p2){
+summary.textContent='Enter all values';
+return;
+}
 
-    const resultBox = document.getElementById('resultBox');
+const d1=calc(v1,a1,p1);
+const d2=calc(v2,a2,p2);
 
-    function num(v) {
-      return Number(v);
-    }
+drink1Std.textContent=d1.std.toFixed(2);
+drink2Std.textContent=d2.std.toFixed(2);
 
-    function format(v) {
-      return Number(v).toFixed(2);
-    }
+drink1CostStd.textContent='$'+d1.costPerStd.toFixed(2);
+drink2CostStd.textContent='$'+d2.costPerStd.toFixed(2);
 
-    function formatCurrency(v) {
-      return '$' + Number(v).toFixed(2);
-    }
+drink1CostLitre.textContent='$'+d1.costPerLitre.toFixed(2);
+drink2CostLitre.textContent='$'+d2.costPerLitre.toFixed(2);
 
-    function reset() {
-      stat1.className = 'stat';
-      stat2.className = 'stat';
-      warning.textContent = '';
+drink1ToLimit.textContent=d1.toLimit.toFixed(2);
+drink2ToLimit.textContent=d2.toLimit.toFixed(2);
 
-      drink1Std.textContent = '-';
-      drink1Value.textContent = '-';
-      drink1CostStd.textContent = '-';
-      drink1CostLitre.textContent = '-';
-      drink1ToLimit.textContent = '-';
+if(d1.costPerStd<d2.costPerStd){
+summary.textContent='Drink 1 wins 🏆';
+stat1.classList.add('win');
+}
+else if(d2.costPerStd<d1.costPerStd){
+summary.textContent='Drink 2 wins 🏆';
+stat2.classList.add('win');
+}
+else{
+summary.textContent='Tie';
+}
 
-      drink2Std.textContent = '-';
-      drink2Value.textContent = '-';
-      drink2CostStd.textContent = '-';
-      drink2CostLitre.textContent = '-';
-      drink2ToLimit.textContent = '-';
-    }
+document.getElementById('resultBox').scrollIntoView({behavior:'smooth'});
+}
 
-    function calculate(volume, abv, price) {
-      const grams = volume * (abv / 100) * 0.789;
-      const std = grams / 10;
-      const value = std / price;
-      const costPerStd = price / std;
-      const costPerLitre = price / (volume / 1000);
-      const drinksToLimit = ROUGH_STANDARD_DRINKS_TO_005 / std;
+function reset(){
+Object.values(fields).forEach(f=>f.value='');
+summary.textContent='Compare two drinks';
+stat1.classList.remove('win');
+stat2.classList.remove('win');
+window.scrollTo({top:0,behavior:'smooth'});
+}
 
-      return {
-        std,
-        value,
-        costPerStd,
-        costPerLitre,
-        drinksToLimit
-      };
-    }
+compareBtn.onclick=compare;
+resetBtn.onclick=reset;
 
-    function compare() {
-      reset();
-
-      const v1 = num(fields.volume1.value);
-      const a1 = num(fields.abv1.value);
-      const p1 = num(fields.price1.value);
-
-      const v2 = num(fields.volume2.value);
-      const a2 = num(fields.abv2.value);
-      const p2 = num(fields.price2.value);
-
-      if (!v1 || !a1 || !p1 || !v2 || !a2 || !p2) {
-        summary.textContent = 'Enter all values';
-        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        return;
-      }
-
-      if ([v1, a1, p1, v2, a2, p2].some(v => Number.isNaN(v) || v < 0) || p1 <= 0 || p2 <= 0) {
-        summary.textContent = 'Fix the inputs';
-        warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
-        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        return;
-      }
-
-      const d1 = calculate(v1, a1, p1);
-      const d2 = calculate(v2, a2, p2);
-
-      drink1Std.textContent = format(d1.std);
-      drink1Value.textContent = format(d1.value);
-      drink1CostStd.textContent = formatCurrency(d1.costPerStd);
-      drink1CostLitre.textContent = formatCurrency(d1.costPerLitre);
-      drink1ToLimit.textContent = format(d1.drinksToLimit);
-
-      drink2Std.textContent = format(d2.std);
-      drink2Value.textContent = format(d2.value);
-      drink2CostStd.textContent = formatCurrency(d2.costPerStd);
-      drink2CostLitre.textContent = formatCurrency(d2.costPerLitre);
-      drink2ToLimit.textContent = format(d2.drinksToLimit);
-
-      if (d1.value > d2.value) {
-        summary.textContent = 'Drink 1 wins 🏆';
-        stat1.classList.add('win');
-      } else if (d2.value > d1.value) {
-        summary.textContent = 'Drink 2 wins 🏆';
-        stat2.classList.add('win');
-      } else {
-        summary.textContent = 'Tie';
-      }
-
-      resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    function resetAll() {
-      Object.values(fields).forEach(f => f.value = '');
-      reset();
-      summary.textContent = 'Compare two drinks';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    document.getElementById('compareBtn').addEventListener('click', compare);
-    document.getElementById('resetBtn').addEventListener('click', resetAll);
-  </script>
+</script>
 
 </body>
 </html>
