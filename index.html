@@ -307,6 +307,12 @@
       min-height:1.2em;
     }
 
+    .bottom-actions{
+      margin-top:16px;
+      display:flex;
+      justify-content:center;
+    }
+
     .flash{
       animation:flashResult .45s ease;
     }
@@ -348,6 +354,14 @@
       }
 
       .actions button{
+        width:100%;
+      }
+
+      .bottom-actions{
+        justify-content:stretch;
+      }
+
+      .bottom-actions button{
         width:100%;
       }
     }
@@ -407,7 +421,6 @@
 
     <div class="actions">
       <button class="primary" id="compareBtn" type="button">Compare</button>
-      <button class="secondary" id="clearBtn" type="button">Clear</button>
     </div>
 
     <div class="result" id="resultBox">
@@ -454,6 +467,10 @@
         <div>Standard drinks = Grams ÷ 10</div>
         <div>Standard drinks per $ = Standard drinks ÷ Price</div>
       </div>
+    </div>
+
+    <div class="bottom-actions">
+      <button class="secondary" id="resetBtn" type="button">Reset</button>
     </div>
 
   </div>
@@ -555,14 +572,15 @@
       resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function clearAll() {
+    function resetAll() {
       Object.values(fields).forEach(f => f.value = '');
       reset();
       summary.textContent = 'Compare two drinks';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     document.getElementById('compareBtn').addEventListener('click', compare);
-    document.getElementById('clearBtn').addEventListener('click', clearAll);
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
   </script>
 
 </body>
