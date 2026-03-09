@@ -142,12 +142,11 @@
       font-size:13px;
       font-weight:600;
       cursor:pointer;
-
-    transition:
-      border-color 0.15s ease,
-      background 0.15s ease,
-      box-shadow 0.15s ease,
-      transform 0.08s ease;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.08s ease;
     }
 
     .size-chip:hover{
@@ -526,7 +525,7 @@
 
           <div class="field-group">
             <label for="price1">Price ($)</label>
-            <input id="price1" type="number" inputmode="decimal" enterkeyhint="done" step="0.01">
+            <input id="price1" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off">
           </div>
         </div>
       </div>
@@ -557,7 +556,7 @@
 
           <div class="field-group">
             <label for="price2">Price ($)</label>
-            <input id="price2" type="number" inputmode="decimal" enterkeyhint="done" step="0.01">
+            <input id="price2" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off">
           </div>
         </div>
       </div>
@@ -731,6 +730,38 @@
       return Number.isInteger(value) ? `$${value}` : `$${value.toFixed(2)}`;
     }
 
+    function formatCentsToCurrency(digits) {
+      const cents = Number(digits || '0');
+      return `$${(cents / 100).toFixed(2)}`;
+    }
+
+    function moveCaretToEnd(input) {
+      requestAnimationFrame(() => {
+        const len = input.value.length;
+        input.setSelectionRange(len, len);
+      });
+    }
+
+    function handleCurrencyInput(input) {
+      const digits = input.value.replace(/\D/g, '');
+
+      if (!digits) {
+        input.value = '';
+        input.dataset.cents = '';
+        return;
+      }
+
+      input.dataset.cents = digits;
+      input.value = formatCentsToCurrency(digits);
+      moveCaretToEnd(input);
+    }
+
+    function getPriceValue(input) {
+      const digits = (input.dataset.cents || '').replace(/\D/g, '');
+      if (!digits) return NaN;
+      return Number(digits) / 100;
+    }
+
     function setSelectedSize(drink, size) {
       selectedSizes[drink] = size;
 
@@ -788,11 +819,11 @@
 
       const v1 = getVolume('1');
       const a1 = Number(fields.abv1.value);
-      const p1 = Number(fields.price1.value);
+      const p1 = getPriceValue(fields.price1);
 
       const v2 = getVolume('2');
       const a2 = Number(fields.abv2.value);
-      const p2 = Number(fields.price2.value);
+      const p2 = getPriceValue(fields.price2);
 
       if (!selectedSizes[1] || !selectedSizes[2] || !v1 || !a1 || !p1 || !v2 || !a2 || !p2) {
         summary.textContent = 'Enter all values';
@@ -843,6 +874,9 @@
     function resetAll() {
       Object.values(fields).forEach(f => {
         f.value = '';
+        if (f.dataset) {
+          f.dataset.cents = '';
+        }
       });
 
       selectedSizes[1] = '';
@@ -863,6 +897,16 @@
     document.querySelectorAll('.size-chip').forEach(btn => {
       btn.addEventListener('click', () => {
         setSelectedSize(btn.dataset.drink, btn.dataset.size);
+      });
+    });
+
+    [fields.price1, fields.price2].forEach(input => {
+      input.addEventListener('input', () => handleCurrencyInput(input));
+      input.addEventListener('focus', () => {
+        if (input.value) moveCaretToEnd(input);
+      });
+      input.addEventListener('click', () => {
+        if (input.value) moveCaretToEnd(input);
       });
     });
 
