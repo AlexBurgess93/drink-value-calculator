@@ -1,728 +1,587 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f766e">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Drink Value">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Drink Value">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-  <title>Drink Value Calculator</title>
+<title>Drink Value Calculator</title>
 
-  <style>
-    :root {
-      --bg: #f3f4f6;
-      --card: #ffffff;
-      --ink: #111827;
-      --muted: #6b7280;
-      --line: #d1d5db;
-      --accent: #0f766e;
-      --input: #dbeafe;
-      --win: #dcfce7;
-      --lose: #fee2e2;
-    }
+<style>
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+:root {
+--bg:#f3f4f6;
+--card:#ffffff;
+--ink:#111827;
+--muted:#6b7280;
+--line:#d1d5db;
+--accent:#0f766e;
+--input:#dbeafe;
+--win:#dcfce7;
+--lose:#fee2e2;
+}
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      scroll-behavior: smooth;
-    }
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
 
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      padding: 24px;
-      padding-top: max(24px, env(safe-area-inset-top));
-      padding-bottom: max(24px, env(safe-area-inset-bottom));
-      padding-left: max(24px, env(safe-area-inset-left));
-      padding-right: max(24px, env(safe-area-inset-right));
-    }
+html,body{
+margin:0;
+padding:0;
+scroll-behavior:smooth;
+}
 
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-    }
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:var(--bg);
+color:var(--ink);
+padding:24px;
+padding-top:max(24px,env(safe-area-inset-top));
+padding-bottom:max(24px,env(safe-area-inset-bottom));
+padding-left:max(24px,env(safe-area-inset-left));
+padding-right:max(24px,env(safe-area-inset-right));
+}
 
-    h1 {
-      margin: 0 0 8px;
-      font-size: 26px;
-    }
+.wrap{
+max-width:980px;
+margin:0 auto;
+}
 
-    p.lead {
-      margin: 0 0 24px;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.5;
-    }
+h1{
+margin:0 0 8px;
+font-size:26px;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 18px;
-      margin-bottom: 20px;
-    }
+p.lead{
+margin:0 0 24px;
+color:var(--muted);
+font-size:16px;
+line-height:1.5;
+}
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 18px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
-      transition: transform 0.12s ease, box-shadow 0.12s ease;
-    }
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:18px;
+margin-bottom:20px;
+}
 
-    .card:focus-within {
-      box-shadow: 0 6px 22px rgba(0,0,0,0.08);
-      transform: translateY(-1px);
-    }
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:14px;
+padding:18px;
+box-shadow:0 4px 16px rgba(0,0,0,0.04);
+transition:transform .12s ease,box-shadow .12s ease;
+}
 
-    .card h2 {
-      margin-top: 0;
-      margin-bottom: 14px;
-      font-size: 18px;
-    }
+.card:focus-within{
+box-shadow:0 6px 22px rgba(0,0,0,0.08);
+transform:translateY(-1px);
+}
 
-    label {
-      display: block;
-      font-weight: 700;
-      margin: 12px 0 6px;
-    }
+.card h2{
+margin-top:0;
+margin-bottom:14px;
+font-size:18px;
+}
 
-    .field-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-    }
+label{
+display:block;
+font-weight:700;
+margin:12px 0 6px;
+}
 
-    .field-group label {
-      margin-top: 0;
-    }
+.field-row{
+display:grid;
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:12px;
+}
 
-    input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #93c5fd;
-      background: var(--input);
-      font-size: 16px;
-      color: var(--ink);
-      outline: none;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    }
+.field-group label{
+margin-top:0;
+}
 
-    input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(15,118,110,0.12);
-      background: #eef6ff;
-    }
+input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid #93c5fd;
+background:var(--input);
+font-size:16px;
+color:var(--ink);
+outline:none;
+transition:border-color .15s ease,box-shadow .15s ease,background .15s ease;
+}
 
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+input:focus{
+border-color:var(--accent);
+box-shadow:0 0 0 3px rgba(15,118,110,0.12);
+background:#eef6ff;
+}
 
-    input[type="number"] {
-      -moz-appearance: textfield;
-      appearance: textfield;
-    }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button{
+-webkit-appearance:none;
+margin:0;
+}
 
-    .buttons {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 20px 0;
-    }
+input[type="number"]{
+-moz-appearance:textfield;
+appearance:textfield;
+}
 
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 18px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.08s ease, box-shadow 0.12s ease, opacity 0.12s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
+.buttons{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+margin:20px 0;
+}
 
-    button:hover {
-      opacity: 0.96;
-    }
+button{
+border:0;
+border-radius:10px;
+padding:12px 18px;
+font-size:16px;
+cursor:pointer;
+transition:transform .08s ease,box-shadow .12s ease,opacity .12s ease;
+box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
 
-    button:active {
-      transform: scale(0.98);
-    }
+button:hover{
+opacity:.96;
+}
 
-    .primary {
-      background: var(--accent);
-      color: white;
-      font-weight: 700;
-    }
+button:active{
+transform:scale(.98);
+}
 
-    .secondary {
-      background: #e5e7eb;
-      color: var(--ink);
-    }
+.primary{
+background:var(--accent);
+color:white;
+font-weight:700;
+}
 
-    .result {
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 20px;
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
-      scroll-margin-top: 20px;
-    }
+.secondary{
+background:#e5e7eb;
+color:var(--ink);
+}
 
-    .result h2 {
-      margin-top: 0;
-    }
+.result{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:14px;
+padding:20px;
+transition:box-shadow .2s ease,transform .2s ease;
+scroll-margin-top:20px;
+}
 
-    .summary {
-      margin: 0 0 16px;
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1.4;
-      min-height: 1.4em;
-    }
+.result h2{
+margin-top:0;
+margin-bottom:6px;
+}
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 14px;
-      margin-top: 16px;
-    }
+.summary{
+margin:0 0 6px;
+font-size:18px;
+font-weight:800;
+color:var(--accent);
+line-height:1.4;
+min-height:0;
+}
 
-    .stat {
-      border-radius: 12px;
-      padding: 14px;
-      border: 1px solid var(--line);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    }
+.summary:empty{
+display:none;
+}
 
-    .stat.win {
-      background: var(--win);
-      box-shadow: 0 6px 18px rgba(34,197,94,0.12);
-    }
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:14px;
+margin-top:6px;
+}
 
-    .stat.lose {
-      background: var(--lose);
-    }
+.stat{
+border-radius:12px;
+padding:14px;
+border:1px solid var(--line);
+transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+}
 
-    .stat strong {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 18px;
-    }
+.stat.win{
+background:var(--win);
+border:2px solid #22c55e;
+transform:translateY(-2px);
+box-shadow:0 10px 22px rgba(34,197,94,0.18);
+}
 
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      padding: 4px 0;
-    }
+.stat.lose{
+background:var(--lose);
+}
 
-    .result-label {
-      text-align: left;
-      color: var(--ink);
-    }
+.stat strong{
+display:block;
+margin-bottom:8px;
+font-size:18px;
+}
 
-    .result-value {
-      text-align: right;
-      font-weight: 700;
-      white-space: nowrap;
-    }
+.result-row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+padding:4px 0;
+}
 
-    .formula {
-      margin-top: 16px;
-      color: var(--muted);
-      line-height: 1.4;
-      font-size: 12px;
-    }
+.result-label{
+text-align:left;
+}
 
-    .warning {
-      color: #991b1b;
-      font-weight: 700;
-      margin-top: 10px;
-      min-height: 1.2em;
-    }
+.result-value{
+text-align:right;
+font-weight:700;
+white-space:nowrap;
+}
 
-    .note {
-      margin-top: 12px;
-      color: var(--muted);
-      font-size: 14px;
-    }
+.formula{
+margin-top:16px;
+color:var(--muted);
+line-height:1.4;
+font-size:12px;
+}
 
-    code {
-      background: #f3f4f6;
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
+.warning{
+color:#991b1b;
+font-weight:700;
+margin-top:10px;
+min-height:1.2em;
+}
 
-    .flash {
-      animation: flashResult 0.45s ease;
-    }
+.note{
+margin-top:12px;
+color:var(--muted);
+font-size:14px;
+}
 
-    @keyframes flashResult {
-      0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 rgba(15,118,110,0);
-      }
-      50% {
-        transform: scale(1.01);
-        box-shadow: 0 0 0 6px rgba(15,118,110,0.12);
-      }
-      100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 rgba(15,118,110,0);
-      }
-    }
+code{
+background:#f3f4f6;
+padding:2px 6px;
+border-radius:6px;
+}
 
-    @media (max-width: 768px) {
-      body {
-        padding: 16px;
-        padding-top: max(16px, env(safe-area-inset-top));
-        padding-bottom: max(16px, env(safe-area-inset-bottom));
-        padding-left: max(16px, env(safe-area-inset-left));
-        padding-right: max(16px, env(safe-area-inset-right));
-      }
+.flash{
+animation:flashResult .45s ease;
+}
 
-      h1 {
-        font-size: 22px;
-      }
+@keyframes flashResult{
+0%{transform:scale(1);box-shadow:0 0 0 rgba(15,118,110,0);}
+50%{transform:scale(1.01);box-shadow:0 0 0 6px rgba(15,118,110,0.12);}
+100%{transform:scale(1);box-shadow:0 0 0 rgba(15,118,110,0);}
+}
 
-      .summary {
-        font-size: 18px;
-      }
+@media (max-width:768px){
 
-      .field-row {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-      }
+body{
+padding:16px;
+padding-top:max(16px,env(safe-area-inset-top));
+padding-bottom:max(16px,env(safe-area-inset-bottom));
+padding-left:max(16px,env(safe-area-inset-left));
+padding-right:max(16px,env(safe-area-inset-right));
+}
 
-      .field-group label {
-        font-size: 12px;
-      }
+h1{font-size:22px;}
 
-      input {
-        padding: 10px;
-      }
+.field-row{
+grid-template-columns:repeat(3,minmax(0,1fr));
+gap:10px;
+}
 
-      .buttons {
-        flex-direction: column;
-      }
+.field-group label{
+font-size:12px;
+}
 
-      .buttons button {
-        width: 100%;
-      }
-    }
-  </style>
+input{
+padding:10px;
+}
+
+.buttons{
+flex-direction:column;
+}
+
+.buttons button{
+width:100%;
+}
+
+}
+
+</style>
 </head>
+
 <body>
-  <div class="wrap">
-    <h1>Drink Value Calculator</h1>
-    <p class="lead">Are you a cheap bastard? Do you want to know which drink gets you more value for money?</p>
 
-    <div class="grid">
-      <div class="card" id="card1">
-        <h2>Drink 1</h2>
+<div class="wrap">
 
-        <div class="field-row">
-          <div class="field-group">
-            <label for="volume1">Volume (ml)</label>
-            <input
-              id="volume1"
-              type="number"
-              inputmode="decimal"
-              enterkeyhint="next"
-              min="0"
-              step="0.1"
-              placeholder="375"
-              autocomplete="off"
-              autocapitalize="off"
-              spellcheck="false"
-            />
-          </div>
+<h1>Drink Value Calculator</h1>
+<p class="lead">Are you a cheap bastard? Do you want to know which drink gets you more value for money?</p>
 
-          <div class="field-group">
-            <label for="abv1">Alcohol %</label>
-            <input
-              id="abv1"
-              type="number"
-              inputmode="decimal"
-              enterkeyhint="next"
-              min="0"
-              step="0.1"
-              placeholder="4.5"
-              autocomplete="off"
-              autocapitalize="off"
-              spellcheck="false"
-            />
-          </div>
+<div class="grid">
 
-          <div class="field-group">
-            <label for="price1">Price ($)</label>
-            <input
-              id="price1"
-              type="number"
-              inputmode="decimal"
-              enterkeyhint="next"
-              min="0"
-              step="0.01"
-              placeholder="6.00"
-              autocomplete="off"
-              autocapitalize="off"
-              spellcheck="false"
-            />
-          </div>
-        </div>
-      </div>
+<div class="card">
+<h2>Drink 1</h2>
 
-      <div class="card" id="card2">
-        <h2>Drink 2</h2>
+<div class="field-row">
 
-        <div class="field-row">
-          <div class="field-group">
-            <label for="volume2">Volume (ml)</label>
-            <input
-              id="volume2"
-              type="number"
-              inputmode="decimal"
-              enterkeyhint="next"
-              min="0"
-              step="0.1"
-              placeholder="330"
-              autocomplete="off"
-              autocapitalize="off"
-              spellcheck="false"
-            />
-          </div>
+<div class="field-group">
+<label for="volume1">Volume (ml)</label>
+<input id="volume1" type="number" inputmode="decimal" step="0.1" placeholder="375">
+</div>
 
-          <div class="field-group">
-            <label for="abv2">Alcohol %</label>
-            <input
-              id="abv2"
-              type="number"
-              inputmode="decimal"
-              enterkeyhint="next"
-              min="0"
-              step="0.1"
-              placeholder="7"
-              autocomplete="off"
-              autocapitalize="off"
-              spellcheck="false"
-            />
-          </div>
+<div class="field-group">
+<label for="abv1">Alcohol %</label>
+<input id="abv1" type="number" inputmode="decimal" step="0.1" placeholder="4.5">
+</div>
 
-          <div class="field-group">
-            <label for="price2">Price ($)</label>
-            <input
-              id="price2"
-              type="number"
-              inputmode="decimal"
-              enterkeyhint="done"
-              min="0"
-              step="0.01"
-              placeholder="8.00"
-              autocomplete="off"
-              autocapitalize="off"
-              spellcheck="false"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+<div class="field-group">
+<label for="price1">Price ($)</label>
+<input id="price1" type="number" inputmode="decimal" step="0.01" placeholder="6.00">
+</div>
 
-    <div class="buttons">
-      <button class="primary" id="compareBtn" type="button">Compare</button>
-      <button class="secondary" id="clearBtn" type="button">Clear</button>
-    </div>
+</div>
+</div>
 
-    <div class="result" id="resultBox">
-      <h2>Result</h2>
-      <div class="summary" id="summary"></div>
-      <div id="warning" class="warning"></div>
+<div class="card">
+<h2>Drink 2</h2>
 
-      <div class="stats">
-        <div class="stat" id="stat1">
-          <strong>Drink 1</strong>
-          <div class="result-row">
-            <span class="result-label">Standard drinks</span>
-            <span class="result-value" id="drink1Std">-</span>
-          </div>
-          <div class="result-row">
-            <span class="result-label">Standard drinks per $</span>
-            <span class="result-value" id="drink1Value">-</span>
-          </div>
-        </div>
+<div class="field-row">
 
-        <div class="stat" id="stat2">
-          <strong>Drink 2</strong>
-          <div class="result-row">
-            <span class="result-label">Standard drinks</span>
-            <span class="result-value" id="drink2Std">-</span>
-          </div>
-          <div class="result-row">
-            <span class="result-label">Standard drinks per $</span>
-            <span class="result-value" id="drink2Value">-</span>
-          </div>
-        </div>
-      </div>
+<div class="field-group">
+<label for="volume2">Volume (ml)</label>
+<input id="volume2" type="number" inputmode="decimal" step="0.1" placeholder="330">
+</div>
 
-      <div class="formula">
-        <div><strong>Formula:</strong></div>
-        <div><code>Grams of alcohol = Volume × (Alcohol % ÷ 100) × 0.789</code></div>
-        <div><code>Standard drinks = Grams of alcohol ÷ 10</code></div>
-        <div><code>Standard drinks per $ = Standard drinks ÷ Price</code></div>
-      </div>
+<div class="field-group">
+<label for="abv2">Alcohol %</label>
+<input id="abv2" type="number" inputmode="decimal" step="0.1" placeholder="7">
+</div>
 
-      <div class="note">Values are saved automatically on this device.</div>
-    </div>
-  </div>
+<div class="field-group">
+<label for="price2">Price ($)</label>
+<input id="price2" type="number" inputmode="decimal" step="0.01" placeholder="8.00">
+</div>
 
-  <script>
-    const STORAGE_KEY = 'drink-value-calculator-fields-v1';
+</div>
+</div>
 
-    const fields = {
-      volume1: document.getElementById('volume1'),
-      abv1: document.getElementById('abv1'),
-      price1: document.getElementById('price1'),
-      volume2: document.getElementById('volume2'),
-      abv2: document.getElementById('abv2'),
-      price2: document.getElementById('price2'),
-    };
+</div>
 
-    const fieldOrder = [
-      fields.volume1,
-      fields.abv1,
-      fields.price1,
-      fields.volume2,
-      fields.abv2,
-      fields.price2
-    ];
+<div class="buttons">
+<button class="primary" id="compareBtn">Compare</button>
+<button class="secondary" id="clearBtn">Clear</button>
+</div>
 
-    const summary = document.getElementById('summary');
-    const warning = document.getElementById('warning');
-    const stat1 = document.getElementById('stat1');
-    const stat2 = document.getElementById('stat2');
-    const resultBox = document.getElementById('resultBox');
-    const drink1Std = document.getElementById('drink1Std');
-    const drink1Value = document.getElementById('drink1Value');
-    const drink2Std = document.getElementById('drink2Std');
-    const drink2Value = document.getElementById('drink2Value');
+<div class="result" id="resultBox">
 
-    function num(value) {
-      return Number(value);
-    }
+<h2>Result</h2>
+<div class="summary" id="summary"></div>
+<div id="warning" class="warning"></div>
 
-    function formatNumber(value, decimals = 2) {
-      return Number(value).toFixed(decimals);
-    }
+<div class="stats">
 
-    function resetStyles() {
-      stat1.className = 'stat';
-      stat2.className = 'stat';
-      warning.textContent = '';
-    }
+<div class="stat" id="stat1">
+<strong>Drink 1</strong>
+<div class="result-row">
+<span class="result-label">Standard drinks</span>
+<span class="result-value" id="drink1Std">-</span>
+</div>
+<div class="result-row">
+<span class="result-label">Standard drinks per $</span>
+<span class="result-value" id="drink1Value">-</span>
+</div>
+</div>
 
-    function resetDrinkOutputs() {
-      drink1Std.textContent = '-';
-      drink1Value.textContent = '-';
-      drink2Std.textContent = '-';
-      drink2Value.textContent = '-';
-    }
+<div class="stat" id="stat2">
+<strong>Drink 2</strong>
+<div class="result-row">
+<span class="result-label">Standard drinks</span>
+<span class="result-value" id="drink2Std">-</span>
+</div>
+<div class="result-row">
+<span class="result-label">Standard drinks per $</span>
+<span class="result-value" id="drink2Value">-</span>
+</div>
+</div>
 
-    function flashResult() {
-      resultBox.classList.remove('flash');
-      void resultBox.offsetWidth;
-      resultBox.classList.add('flash');
-    }
+</div>
 
-    function scrollToResult() {
-      resultBox.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
-    }
+<div class="formula">
+<div><strong>Formula:</strong></div>
+<div><code>Grams of alcohol = Volume × (Alcohol % ÷ 100) × 0.789</code></div>
+<div><code>Standard drinks = Grams of alcohol ÷ 10</code></div>
+<div><code>Standard drinks per $ = Standard drinks ÷ Price</code></div>
+</div>
 
-    function calculateDrink(volume, abv, price) {
-      const gramsAlcohol = volume * (abv / 100) * 0.789;
-      const standardDrinks = gramsAlcohol / 10;
-      const standardDrinksPerDollar = standardDrinks / price;
-      return { standardDrinks, standardDrinksPerDollar };
-    }
+<div class="note">Values are saved automatically on this device.</div>
 
-    function saveFields() {
-      const data = {};
-      Object.entries(fields).forEach(([key, input]) => {
-        data[key] = input.value;
-      });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    }
+</div>
 
-    function loadSavedFields() {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
+</div>
 
-      try {
-        const data = JSON.parse(raw);
-        Object.entries(fields).forEach(([key, input]) => {
-          if (typeof data[key] === 'string') {
-            input.value = data[key];
-          }
-        });
-      } catch (error) {
-        console.error('Failed to load saved values:', error);
-      }
-    }
+<script>
 
-    function clearSavedFields() {
-      localStorage.removeItem(STORAGE_KEY);
-    }
+const fields={
+volume1:document.getElementById('volume1'),
+abv1:document.getElementById('abv1'),
+price1:document.getElementById('price1'),
+volume2:document.getElementById('volume2'),
+abv2:document.getElementById('abv2'),
+price2:document.getElementById('price2')
+};
 
-    function focusNextField(currentInput) {
-      const currentIndex = fieldOrder.indexOf(currentInput);
-      if (currentIndex === -1) return;
+const summary=document.getElementById('summary');
+const warning=document.getElementById('warning');
 
-      const nextInput = fieldOrder[currentIndex + 1];
-      if (nextInput) {
-        nextInput.focus();
-        if (typeof nextInput.select === 'function') {
-          nextInput.select();
-        }
-      } else {
-        document.getElementById('compareBtn').focus();
-      }
-    }
+const stat1=document.getElementById('stat1');
+const stat2=document.getElementById('stat2');
 
-    function compareDrinks() {
-      resetStyles();
-      resetDrinkOutputs();
+const drink1Std=document.getElementById('drink1Std');
+const drink1Value=document.getElementById('drink1Value');
+const drink2Std=document.getElementById('drink2Std');
+const drink2Value=document.getElementById('drink2Value');
 
-      const volume1Raw = fields.volume1.value.trim();
-      const abv1Raw = fields.abv1.value.trim();
-      const price1Raw = fields.price1.value.trim();
-      const volume2Raw = fields.volume2.value.trim();
-      const abv2Raw = fields.abv2.value.trim();
-      const price2Raw = fields.price2.value.trim();
+const resultBox=document.getElementById('resultBox');
 
-      const values = [volume1Raw, abv1Raw, price1Raw, volume2Raw, abv2Raw, price2Raw];
-      const filledCount = values.filter(v => v !== '').length;
+function num(v){return Number(v);}
 
-      if (filledCount < 6) {
-        summary.textContent = `Enter ${6 - filledCount} more value${6 - filledCount === 1 ? '' : 's'} first.`;
-        warning.textContent = '';
-        flashResult();
-        scrollToResult();
-        return;
-      }
+function formatNumber(v,d=2){return Number(v).toFixed(d);}
 
-      const volume1 = num(volume1Raw);
-      const abv1 = num(abv1Raw);
-      const price1 = num(price1Raw);
-      const volume2 = num(volume2Raw);
-      const abv2 = num(abv2Raw);
-      const price2 = num(price2Raw);
+function resetStyles(){
+stat1.className='stat';
+stat2.className='stat';
+warning.textContent='';
+}
 
-      const allValues = [volume1, abv1, price1, volume2, abv2, price2];
-      const hasBadValue =
-        allValues.some(v => Number.isNaN(v) || v < 0) ||
-        price1 <= 0 ||
-        price2 <= 0;
+function resetDrinkOutputs(){
+drink1Std.textContent='-';
+drink1Value.textContent='-';
+drink2Std.textContent='-';
+drink2Value.textContent='-';
+}
 
-      if (hasBadValue) {
-        summary.textContent = 'Fix the inputs.';
-        warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
-        flashResult();
-        scrollToResult();
-        return;
-      }
+function flashResult(){
+resultBox.classList.remove('flash');
+void resultBox.offsetWidth;
+resultBox.classList.add('flash');
+}
 
-      const d1 = calculateDrink(volume1, abv1, price1);
-      const d2 = calculateDrink(volume2, abv2, price2);
+function scrollToResult(){
+resultBox.scrollIntoView({behavior:'smooth',block:'start'});
+}
 
-      drink1Std.textContent = formatNumber(d1.standardDrinks, 2);
-      drink1Value.textContent = formatNumber(d1.standardDrinksPerDollar, 2);
-      drink2Std.textContent = formatNumber(d2.standardDrinks, 2);
-      drink2Value.textContent = formatNumber(d2.standardDrinksPerDollar, 2);
+function calculateDrink(volume,abv,price){
+const gramsAlcohol=volume*(abv/100)*0.789;
+const standardDrinks=gramsAlcohol/10;
+const standardDrinksPerDollar=standardDrinks/price;
+return{standardDrinks,standardDrinksPerDollar};
+}
 
-      if (d1.standardDrinksPerDollar > d2.standardDrinksPerDollar) {
-        summary.textContent = `Drink 1 is better value. It gives ${formatNumber(d1.standardDrinksPerDollar - d2.standardDrinksPerDollar, 2)} more standard drinks per dollar.`;
-        stat1.classList.add('win');
-        stat2.classList.add('lose');
-      } else if (d2.standardDrinksPerDollar > d1.standardDrinksPerDollar) {
-        summary.textContent = `Drink 2 is better value. It gives ${formatNumber(d2.standardDrinksPerDollar - d1.standardDrinksPerDollar, 2)} more standard drinks per dollar.`;
-        stat2.classList.add('win');
-        stat1.classList.add('lose');
-      } else {
-        summary.textContent = 'It is a tie. Both drinks give the same standard drinks per dollar.';
-      }
+function compareDrinks(){
 
-      flashResult();
-      scrollToResult();
-    }
+resetStyles();
+resetDrinkOutputs();
 
-    function clearAll() {
-      Object.values(fields).forEach(input => {
-        input.value = '';
-      });
+const v1=fields.volume1.value.trim();
+const a1=fields.abv1.value.trim();
+const p1=fields.price1.value.trim();
+const v2=fields.volume2.value.trim();
+const a2=fields.abv2.value.trim();
+const p2=fields.price2.value.trim();
 
-      clearSavedFields();
-      resetStyles();
-      resetDrinkOutputs();
+const values=[v1,a1,p1,v2,a2,p2];
+const filled=values.filter(v=>v!=='').length;
 
-      summary.textContent = '';
-      warning.textContent = '';
+if(filled<6){
+summary.textContent=`Enter ${6-filled} more value${6-filled===1?'':'s'} first.`;
+flashResult();
+scrollToResult();
+return;
+}
 
-      if (document.activeElement && typeof document.activeElement.blur === 'function') {
-        document.activeElement.blur();
-      }
+const volume1=num(v1);
+const abv1=num(a1);
+const price1=num(p1);
 
-      flashResult();
-    }
+const volume2=num(v2);
+const abv2=num(a2);
+const price2=num(p2);
 
-    function registerServiceWorker() {
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js').catch(error => {
-            console.error('Service worker registration failed:', error);
-          });
-        });
-      }
-    }
+const bad=
+[volume1,abv1,price1,volume2,abv2,price2].some(v=>Number.isNaN(v)||v<0)
+||price1<=0||price2<=0;
 
-    document.getElementById('compareBtn').addEventListener('click', compareDrinks);
-    document.getElementById('clearBtn').addEventListener('click', clearAll);
+if(bad){
+summary.textContent='Fix the inputs.';
+warning.textContent='Volume and alcohol % cannot be negative. Price must be above 0.';
+flashResult();
+scrollToResult();
+return;
+}
 
-    Object.values(fields).forEach(input => {
-      input.addEventListener('input', saveFields);
+const d1=calculateDrink(volume1,abv1,price1);
+const d2=calculateDrink(volume2,abv2,price2);
 
-      input.addEventListener('keydown', event => {
-        if (event.key === 'Enter') {
-          event.preventDefault();
+drink1Std.textContent=formatNumber(d1.standardDrinks,2);
+drink1Value.textContent=formatNumber(d1.standardDrinksPerDollar,2);
 
-          if (input === fields.price2) {
-            compareDrinks();
-          } else {
-            focusNextField(input);
-          }
-        }
-      });
-    });
+drink2Std.textContent=formatNumber(d2.standardDrinks,2);
+drink2Value.textContent=formatNumber(d2.standardDrinksPerDollar,2);
 
-    loadSavedFields();
-    registerServiceWorker();
-  </script>
+if(d1.standardDrinksPerDollar>d2.standardDrinksPerDollar){
+summary.textContent=`Drink 1 is better value.`;
+stat1.classList.add('win');
+stat2.classList.add('lose');
+}
+
+else if(d2.standardDrinksPerDollar>d1.standardDrinksPerDollar){
+summary.textContent=`Drink 2 is better value.`;
+stat2.classList.add('win');
+stat1.classList.add('lose');
+}
+
+else{
+summary.textContent='It is a tie.';
+}
+
+flashResult();
+scrollToResult();
+
+}
+
+function clearAll(){
+
+Object.values(fields).forEach(i=>i.value='');
+
+resetStyles();
+resetDrinkOutputs();
+
+summary.textContent='';
+warning.textContent='';
+
+flashResult();
+
+}
+
+document.getElementById('compareBtn').addEventListener('click',compareDrinks);
+document.getElementById('clearBtn').addEventListener('click',clearAll);
+
+</script>
+
 </body>
 </html>
