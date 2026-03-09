@@ -188,11 +188,12 @@
     }
 
     .summary {
-      margin: 10px 0 16px;
+      margin: 0 0 16px;
       font-size: 18px;
       font-weight: 800;
       color: var(--accent);
       line-height: 1.4;
+      min-height: 1.4em;
     }
 
     .stats {
@@ -220,14 +221,34 @@
 
     .stat strong {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-size: 18px;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 0;
+    }
+
+    .result-label {
+      text-align: left;
+      color: var(--ink);
+    }
+
+    .result-value {
+      text-align: right;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
     .formula {
       margin-top: 16px;
       color: var(--muted);
-      line-height: 1.5;
+      line-height: 1.4;
+      font-size: 12px;
     }
 
     .warning {
@@ -430,19 +451,32 @@
 
     <div class="result" id="resultBox">
       <h2>Result</h2>
-      <div class="summary" id="summary">Enter all 6 values, then press Compare.</div>
+      <div class="summary" id="summary"></div>
       <div id="warning" class="warning"></div>
 
       <div class="stats">
         <div class="stat" id="stat1">
           <strong>Drink 1</strong>
-          <div id="drink1Std">Standard drinks: -</div>
-          <div id="drink1Value">Standard drinks per $: -</div>
+          <div class="result-row">
+            <span class="result-label">Standard drinks</span>
+            <span class="result-value" id="drink1Std">-</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Standard drinks per $</span>
+            <span class="result-value" id="drink1Value">-</span>
+          </div>
         </div>
+
         <div class="stat" id="stat2">
           <strong>Drink 2</strong>
-          <div id="drink2Std">Standard drinks: -</div>
-          <div id="drink2Value">Standard drinks per $: -</div>
+          <div class="result-row">
+            <span class="result-label">Standard drinks</span>
+            <span class="result-value" id="drink2Std">-</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Standard drinks per $</span>
+            <span class="result-value" id="drink2Value">-</span>
+          </div>
         </div>
       </div>
 
@@ -503,10 +537,10 @@
     }
 
     function resetDrinkOutputs() {
-      drink1Std.textContent = 'Standard drinks: -';
-      drink1Value.textContent = 'Standard drinks per $: -';
-      drink2Std.textContent = 'Standard drinks: -';
-      drink2Value.textContent = 'Standard drinks per $: -';
+      drink1Std.textContent = '-';
+      drink1Value.textContent = '-';
+      drink2Std.textContent = '-';
+      drink2Value.textContent = '-';
     }
 
     function flashResult() {
@@ -618,10 +652,10 @@
       const d1 = calculateDrink(volume1, abv1, price1);
       const d2 = calculateDrink(volume2, abv2, price2);
 
-      drink1Std.textContent = `Standard drinks: ${formatNumber(d1.standardDrinks, 2)}`;
-      drink1Value.textContent = `Standard drinks per $: ${formatNumber(d1.standardDrinksPerDollar, 2)}`;
-      drink2Std.textContent = `Standard drinks: ${formatNumber(d2.standardDrinks, 2)}`;
-      drink2Value.textContent = `Standard drinks per $: ${formatNumber(d2.standardDrinksPerDollar, 2)}`;
+      drink1Std.textContent = formatNumber(d1.standardDrinks, 2);
+      drink1Value.textContent = formatNumber(d1.standardDrinksPerDollar, 2);
+      drink2Std.textContent = formatNumber(d2.standardDrinks, 2);
+      drink2Value.textContent = formatNumber(d2.standardDrinksPerDollar, 2);
 
       if (d1.standardDrinksPerDollar > d2.standardDrinksPerDollar) {
         summary.textContent = `Drink 1 is better value. It gives ${formatNumber(d1.standardDrinksPerDollar - d2.standardDrinksPerDollar, 2)} more standard drinks per dollar.`;
@@ -648,7 +682,7 @@
       resetStyles();
       resetDrinkOutputs();
 
-      summary.textContent = 'Enter all 6 values, then press Compare.';
+      summary.textContent = '';
       warning.textContent = '';
 
       if (document.activeElement && typeof document.activeElement.blur === 'function') {
