@@ -30,6 +30,10 @@
       --accent-strong:#0b5f59;
       --input:#dbeafe;
       --win:#dcfce7;
+      --chip-bg:#f8fafc;
+      --chip-border:#cbd5e1;
+      --chip-active:#0f766e;
+      --chip-active-bg:#e6fffb;
     }
 
     *{
@@ -116,9 +120,62 @@
       margin:12px 0 6px;
     }
 
+    .size-label{
+      margin-top:0;
+      margin-bottom:8px;
+    }
+
+    .size-options{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:12px;
+    }
+
+    .size-chip{
+      appearance:none;
+      border:1px solid var(--chip-border);
+      background:var(--chip-bg);
+      color:var(--ink);
+      border-radius:999px;
+      padding:10px 14px;
+      font-size:14px;
+      line-height:1.1;
+      font-weight:600;
+      cursor:pointer;
+      transition:border-color 0.15s ease, background 0.15s ease, color 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+      box-shadow:none;
+    }
+
+    .size-chip:hover{
+      border-color:#94a3b8;
+      background:#ffffff;
+      opacity:1;
+    }
+
+    .size-chip:active{
+      transform:scale(.98);
+    }
+
+    .size-chip.active{
+      background:var(--chip-active-bg);
+      border-color:var(--chip-active);
+      color:var(--chip-active);
+      box-shadow:0 0 0 3px rgba(15,118,110,0.10);
+    }
+
+    .custom-volume{
+      display:none;
+      margin-bottom:4px;
+    }
+
+    .custom-volume.show{
+      display:block;
+    }
+
     .field-row{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
     }
 
@@ -396,7 +453,7 @@
       }
 
       .field-row{
-        grid-template-columns:repeat(3,minmax(0,1fr));
+        grid-template-columns:repeat(2,minmax(0,1fr));
         gap:10px;
       }
 
@@ -406,6 +463,11 @@
 
       input{
         padding:10px;
+      }
+
+      .size-chip{
+        flex:1 1 calc(50% - 4px);
+        text-align:center;
       }
 
       .bottom-actions{
@@ -429,12 +491,22 @@
       <div class="card">
         <h2>Drink 1</h2>
 
-        <div class="field-row">
+        <label class="size-label">Size</label>
+        <div class="size-options" data-drink="1">
+          <button class="size-chip" type="button" data-drink="1" data-size="pint">Pint</button>
+          <button class="size-chip" type="button" data-drink="1" data-size="schooner">Schooner</button>
+          <button class="size-chip" type="button" data-drink="1" data-size="middy">Middy</button>
+          <button class="size-chip" type="button" data-drink="1" data-size="custom">Custom</button>
+        </div>
+
+        <div class="custom-volume" id="customVolumeWrap1">
           <div class="field-group">
-            <label for="volume1">Volume (ml)</label>
+            <label for="volume1">Custom volume (ml)</label>
             <input id="volume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="375">
           </div>
+        </div>
 
+        <div class="field-row">
           <div class="field-group">
             <label for="abv1">Alcohol %</label>
             <input id="abv1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="4.5">
@@ -442,7 +514,7 @@
 
           <div class="field-group">
             <label for="price1">Price ($)</label>
-            <input id="price1" type="number" inputmode="decimal" enterkeyhint="next" step="0.01" placeholder="6.00">
+            <input id="price1" type="number" inputmode="decimal" enterkeyhint="done" step="0.01" placeholder="6.00">
           </div>
         </div>
       </div>
@@ -450,12 +522,22 @@
       <div class="card">
         <h2>Drink 2</h2>
 
-        <div class="field-row">
-          <div class="field-group">
-            <label for="volume2">Volume (ml)</label>
-            <input id="volume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="330">
-          </div>
+        <label class="size-label">Size</label>
+        <div class="size-options" data-drink="2">
+          <button class="size-chip" type="button" data-drink="2" data-size="pint">Pint</button>
+          <button class="size-chip" type="button" data-drink="2" data-size="schooner">Schooner</button>
+          <button class="size-chip" type="button" data-drink="2" data-size="middy">Middy</button>
+          <button class="size-chip" type="button" data-drink="2" data-size="custom">Custom</button>
+        </div>
 
+        <div class="custom-volume" id="customVolumeWrap2">
+          <div class="field-group">
+            <label for="volume2">Custom volume (ml)</label>
+            <input id="volume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="375">
+          </div>
+        </div>
+
+        <div class="field-row">
           <div class="field-group">
             <label for="abv2">Alcohol %</label>
             <input id="abv2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="7">
@@ -571,6 +653,13 @@
   <script>
     const LIMIT = 2.5;
 
+    const SIZE_MAP = {
+      pint: { label: 'Pint', volume: 570 },
+      schooner: { label: 'Schooner', volume: 425 },
+      middy: { label: 'Middy', volume: 285 },
+      custom: { label: 'Custom', volume: null }
+    };
+
     const fields = {
       volume1: document.getElementById('volume1'),
       abv1: document.getElementById('abv1'),
@@ -578,6 +667,11 @@
       volume2: document.getElementById('volume2'),
       abv2: document.getElementById('abv2'),
       price2: document.getElementById('price2')
+    };
+
+    const selectedSizes = {
+      1: '',
+      2: ''
     };
 
     const summary = document.getElementById('summary');
@@ -602,6 +696,9 @@
     const drink2Mass = document.getElementById('drink2Mass');
     const drink2ToLimit = document.getElementById('drink2ToLimit');
 
+    const customVolumeWrap1 = document.getElementById('customVolumeWrap1');
+    const customVolumeWrap2 = document.getElementById('customVolumeWrap2');
+
     function calc(v, a, p) {
       const grams = v * (a / 100) * 0.789;
       const std = grams / 10;
@@ -617,6 +714,46 @@
 
     function formatInputPrice(value) {
       return Number.isInteger(value) ? `$${value}` : `$${value.toFixed(2)}`;
+    }
+
+    function setSelectedSize(drink, size) {
+      selectedSizes[drink] = size;
+
+      document.querySelectorAll(`.size-chip[data-drink="${drink}"]`).forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.size === size);
+      });
+
+      const isCustom = size === 'custom';
+      const wrap = drink === '1' ? customVolumeWrap1 : customVolumeWrap2;
+      const input = drink === '1' ? fields.volume1 : fields.volume2;
+
+      wrap.classList.toggle('show', isCustom);
+
+      if (!isCustom) {
+        input.value = '';
+      }
+    }
+
+    function getVolume(drink) {
+      const sizeKey = selectedSizes[drink];
+
+      if (!sizeKey) return NaN;
+      if (sizeKey === 'custom') {
+        return Number(drink === '1' ? fields.volume1.value : fields.volume2.value);
+      }
+
+      return SIZE_MAP[sizeKey].volume;
+    }
+
+    function getSizeMeta(drink, volume) {
+      const sizeKey = selectedSizes[drink];
+      if (!sizeKey) return '';
+
+      if (sizeKey === 'custom') {
+        return `Custom (${volume}mL)`;
+      }
+
+      return `${SIZE_MAP[sizeKey].label} (${volume}mL)`;
     }
 
     function resetResults() {
@@ -643,34 +780,34 @@
     function compare() {
       resetResults();
 
-      const v1 = Number(fields.volume1.value);
+      const v1 = getVolume('1');
       const a1 = Number(fields.abv1.value);
       const p1 = Number(fields.price1.value);
 
-      const v2 = Number(fields.volume2.value);
+      const v2 = getVolume('2');
       const a2 = Number(fields.abv2.value);
       const p2 = Number(fields.price2.value);
 
-      if (!v1 || !a1 || !p1 || !v2 || !a2 || !p2) {
+      if (!selectedSizes[1] || !selectedSizes[2] || !v1 || !a1 || !p1 || !v2 || !a2 || !p2) {
         summary.textContent = 'Enter all values';
         resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
 
-      if ([v1, a1, p1, v2, a2, p2].some(v => Number.isNaN(v) || v < 0) || p1 <= 0 || p2 <= 0) {
+      if ([v1, a1, p1, v2, a2, p2].some(v => Number.isNaN(v) || v < 0) || v1 <= 0 || v2 <= 0 || p1 <= 0 || p2 <= 0) {
         summary.textContent = 'Fix the inputs';
-        warning.textContent = 'Volume and alcohol % cannot be negative. Price must be above 0.';
+        warning.textContent = 'Volume and alcohol % cannot be negative. Volume and price must be above 0.';
         resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
 
       drink1Meta.innerHTML =
-        `<span class="meta-label">Vol:</span> ${v1}mL - ` +
+        `<span class="meta-label">Size:</span> ${getSizeMeta('1', v1)} - ` +
         `<span class="meta-label">ABV:</span> ${a1}% - ` +
         `<span class="meta-label">Price:</span> ${formatInputPrice(p1)}`;
 
       drink2Meta.innerHTML =
-        `<span class="meta-label">Vol:</span> ${v2}mL - ` +
+        `<span class="meta-label">Size:</span> ${getSizeMeta('2', v2)} - ` +
         `<span class="meta-label">ABV:</span> ${a2}% - ` +
         `<span class="meta-label">Price:</span> ${formatInputPrice(p2)}`;
 
@@ -707,10 +844,26 @@
         f.value = '';
       });
 
+      selectedSizes[1] = '';
+      selectedSizes[2] = '';
+
+      document.querySelectorAll('.size-chip').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      customVolumeWrap1.classList.remove('show');
+      customVolumeWrap2.classList.remove('show');
+
       resetResults();
       summary.textContent = 'Compare two drinks';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    document.querySelectorAll('.size-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setSelectedSize(btn.dataset.drink, btn.dataset.size);
+      });
+    });
 
     document.getElementById('compareBtn').addEventListener('click', compare);
     document.getElementById('resetBtn').addEventListener('click', resetAll);
