@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" href="favicon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="manifest" href="manifest.json">
 
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0f766e">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Drink Value">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
 
-  <title>Drink Value Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Drink Value">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Drink Value Calculator</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
+
 :root{
 --bg:#f3f4f6;
 --card:#ffffff;
@@ -31,9 +32,21 @@
 --win:#dcfce7;
 }
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
 
-html,body{margin:0;padding:0;scroll-behavior:smooth;}
+button{
+user-select:none;
+-webkit-user-select:none;
+}
+
+html,body{
+margin:0;
+padding:0;
+scroll-behavior:smooth;
+}
 
 body{
 font-family:'Inter',system-ui,-apple-system,sans-serif;
@@ -42,7 +55,10 @@ color:var(--ink);
 padding:24px;
 }
 
-.wrap{max-width:980px;margin:0 auto;}
+.wrap{
+max-width:980px;
+margin:0 auto;
+}
 
 h1{
 margin:0 0 6px;
@@ -74,8 +90,7 @@ box-shadow:0 4px 16px rgba(0,0,0,0.04);
 }
 
 .card h2{
-margin-top:0;
-margin-bottom:14px;
+margin:0 0 14px;
 font-size:18px;
 font-weight:600;
 }
@@ -102,7 +117,13 @@ font-size:16px;
 outline:none;
 }
 
-.actions{margin-bottom:20px;}
+.actions{
+margin-bottom:22px;
+}
+
+.actions button{
+width:100%;
+}
 
 .primary{
 border:0;
@@ -112,6 +133,15 @@ font-weight:700;
 padding:12px 18px;
 border-radius:12px;
 cursor:pointer;
+transition:background .15s ease, transform .08s ease;
+}
+
+.primary:hover{
+background:var(--accent-strong);
+}
+
+.primary:active{
+transform:scale(.97);
 }
 
 .result{
@@ -163,8 +193,13 @@ margin-bottom:8px;
 font-size:18px;
 }
 
-.trophy{display:none;}
-.stat.win .trophy{display:inline-block;}
+.trophy{
+display:none;
+}
+
+.stat.win .trophy{
+display:inline-block;
+}
 
 .result-row{
 display:flex;
@@ -176,13 +211,11 @@ font-size:14px;
 }
 
 .result-label{
-text-align:left;
 color:var(--muted);
 font-weight:500;
 }
 
 .result-value{
-text-align:right;
 font-weight:700;
 font-variant-numeric:tabular-nums;
 letter-spacing:0.02em;
@@ -203,7 +236,6 @@ font-size:12px;
 .disclaimer{
 margin-top:10px;
 color:var(--muted);
-line-height:1.4;
 font-size:11px;
 }
 
@@ -222,12 +254,34 @@ padding:12px 18px;
 border-radius:12px;
 cursor:pointer;
 }
+
+@media (max-width:768px){
+
+.actions{
+flex-direction:column;
+}
+
+.actions button{
+width:100%;
+}
+
+.bottom-actions{
+justify-content:stretch;
+}
+
+.bottom-actions button{
+width:100%;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="wrap">
+
 <h1>Drink Value Calculator</h1>
 <p class="lead">Are you a cheap bastard? Do you want to know which drink gets you more value for money?</p>
 
@@ -235,37 +289,47 @@ cursor:pointer;
 
 <div class="card">
 <h2>Drink 1</h2>
+
 <div class="field-row">
+
 <div>
 <label>Volume (ml)</label>
 <input id="volume1" type="number" inputmode="decimal" step="0.1" placeholder="375">
 </div>
+
 <div>
 <label>Alcohol %</label>
 <input id="abv1" type="number" inputmode="decimal" step="0.1" placeholder="4.5">
 </div>
+
 <div>
 <label>Price ($)</label>
 <input id="price1" type="number" inputmode="decimal" step="0.01" placeholder="6.00">
 </div>
+
 </div>
 </div>
 
 <div class="card">
 <h2>Drink 2</h2>
+
 <div class="field-row">
+
 <div>
 <label>Volume (ml)</label>
 <input id="volume2" type="number" inputmode="decimal" step="0.1" placeholder="330">
 </div>
+
 <div>
 <label>Alcohol %</label>
 <input id="abv2" type="number" inputmode="decimal" step="0.1" placeholder="7">
 </div>
+
 <div>
 <label>Price ($)</label>
 <input id="price2" type="number" inputmode="decimal" step="0.01" placeholder="8.00">
 </div>
+
 </div>
 </div>
 
@@ -276,12 +340,14 @@ cursor:pointer;
 </div>
 
 <div class="result" id="resultBox">
+
 <h2>Result</h2>
 <div class="summary" id="summary">Compare two drinks</div>
 
 <div class="stats">
 
 <div class="stat" id="stat1">
+
 <strong>Drink 1 <span class="trophy">🏆</span></strong>
 
 <div class="result-row">
@@ -307,6 +373,7 @@ cursor:pointer;
 </div>
 
 <div class="stat" id="stat2">
+
 <strong>Drink 2 <span class="trophy">🏆</span></strong>
 
 <div class="result-row">
@@ -340,7 +407,7 @@ Cost per litre = Price ÷ (Volume ÷ 1000)
 </div>
 
 <div class="disclaimer">
-Drinks to ~0.05 BAC is a rough estimate only based on ~2.5 standard drinks.
+Drinks to ~0.05 BAC is a rough estimate based on ~2.5 standard drinks.
 </div>
 
 </div>
@@ -353,32 +420,29 @@ Drinks to ~0.05 BAC is a rough estimate only based on ~2.5 standard drinks.
 
 <script>
 
-const LIMIT = 2.5;
+const LIMIT=2.5;
 
 const fields={
-volume1:document.getElementById('volume1'),
-abv1:document.getElementById('abv1'),
-price1:document.getElementById('price1'),
-volume2:document.getElementById('volume2'),
-abv2:document.getElementById('abv2'),
-price2:document.getElementById('price2')
+volume1:volume1,
+abv1:abv1,
+price1:price1,
+volume2:volume2,
+abv2:abv2,
+price2:price2
 };
 
-const summary=document.getElementById('summary');
-const stat1=document.getElementById('stat1');
-const stat2=document.getElementById('stat2');
+function calc(v,a,p){
 
-function calc(volume,abv,price){
-
-const grams=volume*(abv/100)*0.789;
+const grams=v*(a/100)*0.789;
 const std=grams/10;
 
 return{
 std,
-costPerStd:price/std,
-costPerLitre:price/(volume/1000),
-toLimit:LIMIT/std
+costStd:p/std,
+costL:p/(v/1000),
+limit:LIMIT/std
 };
+
 }
 
 function compare(){
@@ -386,13 +450,13 @@ function compare(){
 stat1.classList.remove('win');
 stat2.classList.remove('win');
 
-const v1=+fields.volume1.value;
-const a1=+fields.abv1.value;
-const p1=+fields.price1.value;
+const v1=+volume1.value;
+const a1=+abv1.value;
+const p1=+price1.value;
 
-const v2=+fields.volume2.value;
-const a2=+fields.abv2.value;
-const p2=+fields.price2.value;
+const v2=+volume2.value;
+const a2=+abv2.value;
+const p2=+price2.value;
 
 if(!v1||!a1||!p1||!v2||!a2||!p2){
 summary.textContent='Enter all values';
@@ -405,20 +469,20 @@ const d2=calc(v2,a2,p2);
 drink1Std.textContent=d1.std.toFixed(2);
 drink2Std.textContent=d2.std.toFixed(2);
 
-drink1CostStd.textContent='$'+d1.costPerStd.toFixed(2);
-drink2CostStd.textContent='$'+d2.costPerStd.toFixed(2);
+drink1CostStd.textContent='$'+d1.costStd.toFixed(2);
+drink2CostStd.textContent='$'+d2.costStd.toFixed(2);
 
-drink1CostLitre.textContent='$'+d1.costPerLitre.toFixed(2);
-drink2CostLitre.textContent='$'+d2.costPerLitre.toFixed(2);
+drink1CostLitre.textContent='$'+d1.costL.toFixed(2);
+drink2CostLitre.textContent='$'+d2.costL.toFixed(2);
 
-drink1ToLimit.textContent=d1.toLimit.toFixed(2);
-drink2ToLimit.textContent=d2.toLimit.toFixed(2);
+drink1ToLimit.textContent=d1.limit.toFixed(2);
+drink2ToLimit.textContent=d2.limit.toFixed(2);
 
-if(d1.costPerStd<d2.costPerStd){
+if(d1.costStd<d2.costStd){
 summary.textContent='Drink 1 wins 🏆';
 stat1.classList.add('win');
 }
-else if(d2.costPerStd<d1.costPerStd){
+else if(d2.costStd<d1.costStd){
 summary.textContent='Drink 2 wins 🏆';
 stat2.classList.add('win');
 }
@@ -426,15 +490,20 @@ else{
 summary.textContent='Tie';
 }
 
-document.getElementById('resultBox').scrollIntoView({behavior:'smooth'});
+resultBox.scrollIntoView({behavior:'smooth'});
 }
 
 function reset(){
+
 Object.values(fields).forEach(f=>f.value='');
+
 summary.textContent='Compare two drinks';
+
 stat1.classList.remove('win');
 stat2.classList.remove('win');
+
 window.scrollTo({top:0,behavior:'smooth'});
+
 }
 
 compareBtn.onclick=compare;
