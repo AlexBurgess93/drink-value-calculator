@@ -272,6 +272,38 @@
       line-height:1.3;
     }
 
+    .quick-picks{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .quick-pick{
+      appearance:none;
+      border:1px solid #93c5fd;
+      background:#eef6ff;
+      color:var(--ink);
+      border-radius:10px;
+      padding:7px 10px;
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        transform 0.08s ease;
+    }
+
+    .quick-pick:hover{
+      border-color:var(--accent);
+      background:#f4f9ff;
+    }
+
+    .quick-pick:active{
+      transform:scale(.97);
+    }
+
     .actions{
       margin:0 0 22px;
     }
@@ -584,7 +616,7 @@
           <div class="custom-volume" id="customVolumeWrap1">
             <div class="field-group">
               <label for="volume1">Custom volume (mL)</label>
-              <input id="volume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+              <input id="volume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="e.g. 330">
             </div>
           </div>
         </div>
@@ -593,21 +625,36 @@
           <div class="field-row">
             <div class="field-group">
               <label for="count1">Items in pack</label>
-              <input id="count1" type="number" inputmode="numeric" enterkeyhint="next" step="1">
+              <input id="count1" type="number" inputmode="numeric" enterkeyhint="next" step="1" list="packCountOptions" placeholder="e.g. 4, 6, 10, 24">
+              <div class="quick-picks" data-target="count1">
+                <button class="quick-pick" type="button" data-value="4">4</button>
+                <button class="quick-pick" type="button" data-value="6">6</button>
+                <button class="quick-pick" type="button" data-value="10">10</button>
+                <button class="quick-pick" type="button" data-value="24">24</button>
+                <button class="quick-pick" type="button" data-value="30">30</button>
+              </div>
             </div>
 
             <div class="field-group">
               <label for="packVolume1">Volume per item (mL)</label>
-              <input id="packVolume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+              <input id="packVolume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" list="packSizeOptions" placeholder="e.g. 330, 375, 440">
+              <div class="quick-picks" data-target="packVolume1">
+                <button class="quick-pick" type="button" data-value="330">330</button>
+                <button class="quick-pick" type="button" data-value="355">355</button>
+                <button class="quick-pick" type="button" data-value="375">375</button>
+                <button class="quick-pick" type="button" data-value="440">440</button>
+                <button class="quick-pick" type="button" data-value="500">500</button>
+                <button class="quick-pick" type="button" data-value="750">750</button>
+              </div>
             </div>
           </div>
-          <!--<div class="helper">Needed so the calculator can work out total standard drinks, alcohol mass, BAC estimate, and cost per litre correctly.</div>-->
+          <div class="helper">Use the presets or type your own values. Native browser pickers vary by phone/browser, so this supports both quick selection and manual entry.</div>
         </div>
 
         <div class="field-row">
           <div class="field-group">
             <label for="abv1">Alcohol %</label>
-            <input id="abv1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+            <input id="abv1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="e.g. 4.8">
           </div>
 
           <div class="field-group">
@@ -632,7 +679,7 @@
           <div class="custom-volume" id="customVolumeWrap2">
             <div class="field-group">
               <label for="volume2">Custom volume (mL)</label>
-              <input id="volume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+              <input id="volume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="e.g. 330">
             </div>
           </div>
         </div>
@@ -641,21 +688,36 @@
           <div class="field-row">
             <div class="field-group">
               <label for="count2">Items in pack</label>
-              <input id="count2" type="number" inputmode="numeric" enterkeyhint="next" step="1">
+              <input id="count2" type="number" inputmode="numeric" enterkeyhint="next" step="1" list="packCountOptions" placeholder="e.g. 4, 6, 10, 24">
+              <div class="quick-picks" data-target="count2">
+                <button class="quick-pick" type="button" data-value="4">4</button>
+                <button class="quick-pick" type="button" data-value="6">6</button>
+                <button class="quick-pick" type="button" data-value="10">10</button>
+                <button class="quick-pick" type="button" data-value="24">24</button>
+                <button class="quick-pick" type="button" data-value="30">30</button>
+              </div>
             </div>
 
             <div class="field-group">
               <label for="packVolume2">Volume per item (mL)</label>
-              <input id="packVolume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+              <input id="packVolume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" list="packSizeOptions" placeholder="e.g. 330, 375, 440">
+              <div class="quick-picks" data-target="packVolume2">
+                <button class="quick-pick" type="button" data-value="330">330</button>
+                <button class="quick-pick" type="button" data-value="355">355</button>
+                <button class="quick-pick" type="button" data-value="375">375</button>
+                <button class="quick-pick" type="button" data-value="440">440</button>
+                <button class="quick-pick" type="button" data-value="500">500</button>
+                <button class="quick-pick" type="button" data-value="750">750</button>
+              </div>
             </div>
           </div>
-          <!--<div class="helper">Needed so the calculator can work out total standard drinks, alcohol mass, BAC estimate, and cost per litre correctly.</div>-->
+          <div class="helper">Use the presets or type your own values. Native browser pickers vary by phone/browser, so this supports both quick selection and manual entry.</div>
         </div>
 
         <div class="field-row">
           <div class="field-group">
             <label for="abv2">Alcohol %</label>
-            <input id="abv2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+            <input id="abv2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1" placeholder="e.g. 4.8">
           </div>
 
           <div class="field-group">
@@ -694,9 +756,14 @@
             <span class="result-value" id="drink1Std">-</span>
           </div>
 
-          <div class="result-row pack-metric">
+          <div class="result-row">
             <span class="result-label" id="drink1StdPerItemLabel">Standard drinks per item</span>
             <span class="result-value" id="drink1StdPerItem">-</span>
+          </div>
+
+          <div class="result-row">
+            <span class="result-label" id="drink1CostPerItemLabel">Cost per item</span>
+            <span class="result-value" id="drink1CostPerItem">-</span>
           </div>
 
           <div class="result-row">
@@ -730,9 +797,14 @@
             <span class="result-value" id="drink2Std">-</span>
           </div>
 
-          <div class="result-row pack-metric">
+          <div class="result-row">
             <span class="result-label" id="drink2StdPerItemLabel">Standard drinks per item</span>
             <span class="result-value" id="drink2StdPerItem">-</span>
+          </div>
+
+          <div class="result-row">
+            <span class="result-label" id="drink2CostPerItemLabel">Cost per item</span>
+            <span class="result-value" id="drink2CostPerItem">-</span>
           </div>
 
           <div class="result-row">
@@ -753,13 +825,14 @@
 
       </div>
 
-      <div class="formula" id="formulaBox">
+      <div class="formula">
         <div><strong>Formulas:</strong></div>
         <div>Grams of alcohol = Volume × (Alcohol % ÷ 100) × 0.789</div>
         <div>Standard drinks = Grams of alcohol ÷ 10</div>
         <div>Cost per standard drink = Price ÷ Standard drinks</div>
         <div>Cost per litre = Price ÷ (Volume ÷ 1000)</div>
-        <div id="packFormulaLine">For packs: Total volume = Item count × Volume per item</div>
+        <div>For packs: Total volume = Item count × Volume per item</div>
+        <div>For packs: Cost per item = Pack price ÷ Item count</div>
       </div>
 
       <div class="disclaimer">
@@ -773,6 +846,31 @@
     <div class="bottom-actions">
       <button class="secondary" id="resetBtn" type="button">Reset</button>
     </div>
+
+    <datalist id="packCountOptions">
+      <option value="4"></option>
+      <option value="6"></option>
+      <option value="8"></option>
+      <option value="10"></option>
+      <option value="12"></option>
+      <option value="16"></option>
+      <option value="20"></option>
+      <option value="24"></option>
+      <option value="30"></option>
+    </datalist>
+
+    <datalist id="packSizeOptions">
+      <option value="250"></option>
+      <option value="300"></option>
+      <option value="330"></option>
+      <option value="355"></option>
+      <option value="375"></option>
+      <option value="440"></option>
+      <option value="500"></option>
+      <option value="700"></option>
+      <option value="750"></option>
+      <option value="1000"></option>
+    </datalist>
 
   </div>
 
@@ -821,6 +919,7 @@
 
     const drink1Std = document.getElementById('drink1Std');
     const drink1StdPerItem = document.getElementById('drink1StdPerItem');
+    const drink1CostPerItem = document.getElementById('drink1CostPerItem');
     const drink1CostStd = document.getElementById('drink1CostStd');
     const drink1CostLitre = document.getElementById('drink1CostLitre');
     const drink1Mass = document.getElementById('drink1Mass');
@@ -828,6 +927,7 @@
 
     const drink2Std = document.getElementById('drink2Std');
     const drink2StdPerItem = document.getElementById('drink2StdPerItem');
+    const drink2CostPerItem = document.getElementById('drink2CostPerItem');
     const drink2CostStd = document.getElementById('drink2CostStd');
     const drink2CostLitre = document.getElementById('drink2CostLitre');
     const drink2Mass = document.getElementById('drink2Mass');
@@ -852,6 +952,10 @@
     const priceLabel2 = document.getElementById('priceLabel2');
     const drink1StdLabel = document.getElementById('drink1StdLabel');
     const drink2StdLabel = document.getElementById('drink2StdLabel');
+    const drink1StdPerItemLabel = document.getElementById('drink1StdPerItemLabel');
+    const drink2StdPerItemLabel = document.getElementById('drink2StdPerItemLabel');
+    const drink1CostPerItemLabel = document.getElementById('drink1CostPerItemLabel');
+    const drink2CostPerItemLabel = document.getElementById('drink2CostPerItemLabel');
     const drink1ToLimitLabel = document.getElementById('drink1ToLimitLabel');
     const drink2ToLimitLabel = document.getElementById('drink2ToLimitLabel');
 
@@ -863,7 +967,8 @@
         totalVolumeMl: volumeMl,
         totalGrams: grams,
         totalStd: std,
-        stdPerItem: std,
+        stdPerItem: null,
+        costPerItem: null,
         costStd: price / std,
         costL: price / (volumeMl / 1000),
         itemsToLimit: LIMIT / std
@@ -882,6 +987,7 @@
         totalGrams,
         totalStd,
         stdPerItem,
+        costPerItem: price / itemCount,
         costStd: price / totalStd,
         costL: price / (totalVolumeMl / 1000),
         itemsToLimit: LIMIT / stdPerItem
@@ -953,6 +1059,18 @@
       return SIZE_MAP[sizeKey].volume;
     }
 
+    function getSingleSizeLabel(drink) {
+      const sizeKey = selectedSizes[drink];
+      if (!sizeKey) return '';
+
+      if (sizeKey === 'custom') {
+        const volume = drink === '1' ? fields.volume1.value : fields.volume2.value;
+        return volume ? `${volume}mL` : 'Custom';
+      }
+
+      return SIZE_MAP[sizeKey].label;
+    }
+
     function resetResults() {
       stat1.classList.remove('win');
       stat2.classList.remove('win');
@@ -965,6 +1083,7 @@
 
       drink1Std.textContent = '-';
       drink1StdPerItem.textContent = '-';
+      drink1CostPerItem.textContent = '-';
       drink1CostStd.textContent = '-';
       drink1CostLitre.textContent = '-';
       drink1Mass.textContent = '-';
@@ -972,6 +1091,7 @@
 
       drink2Std.textContent = '-';
       drink2StdPerItem.textContent = '-';
+      drink2CostPerItem.textContent = '-';
       drink2CostStd.textContent = '-';
       drink2CostLitre.textContent = '-';
       drink2Mass.textContent = '-';
@@ -1005,6 +1125,12 @@
       drink1StdLabel.textContent = isSingle ? 'Standard drinks' : 'Total standard drinks';
       drink2StdLabel.textContent = isSingle ? 'Standard drinks' : 'Total standard drinks';
 
+      drink1StdPerItemLabel.textContent = 'Standard drinks per item';
+      drink2StdPerItemLabel.textContent = 'Standard drinks per item';
+
+      drink1CostPerItemLabel.textContent = 'Cost per item';
+      drink2CostPerItemLabel.textContent = 'Cost per item';
+
       drink1ToLimitLabel.textContent = isSingle ? 'Drinks to ~0.05 BAC' : 'Items to ~0.05 BAC';
       drink2ToLimitLabel.textContent = isSingle ? 'Drinks to ~0.05 BAC' : 'Items to ~0.05 BAC';
 
@@ -1017,6 +1143,8 @@
     }
 
     function compareSingle() {
+      resetResults();
+
       const v1 = getSingleVolume('1');
       const a1 = Number(fields.abv1.value);
       const p1 = getPriceValue(fields.price1);
@@ -1032,8 +1160,11 @@
         return;
       }
 
-      drink1Meta.innerHTML = `${v1}mL • ${a1}% • ${formatInputPrice(p1)}`;
-      drink2Meta.innerHTML = `${v2}mL • ${a2}% • ${formatInputPrice(p2)}`;
+      const sizeLabel1 = getSingleSizeLabel('1');
+      const sizeLabel2 = getSingleSizeLabel('2');
+
+      drink1Meta.innerHTML = `${sizeLabel1} • ${formatInputPrice(p1)} • ${a1}%`;
+      drink2Meta.innerHTML = `${sizeLabel2} • ${formatInputPrice(p2)} • ${a2}%`;
 
       const d1 = calcSingle(v1, a1, p1);
       const d2 = calcSingle(v2, a2, p2);
@@ -1042,6 +1173,8 @@
     }
 
     function comparePack() {
+      resetResults();
+
       const count1 = Number(fields.count1.value);
       const volume1 = Number(fields.packVolume1.value);
       const a1 = Number(fields.abv1.value);
@@ -1066,8 +1199,8 @@
         return;
       }
 
-      drink1Meta.innerHTML = `${count1} × ${volume1}mL • ${a1}% • ${formatInputPrice(p1)}`;
-      drink2Meta.innerHTML = `${count2} × ${volume2}mL • ${a2}% • ${formatInputPrice(p2)}`;
+      drink1Meta.innerHTML = `${count1} pack • ${formatInputPrice(p1)} • ${a1}%`;
+      drink2Meta.innerHTML = `${count2} pack • ${formatInputPrice(p2)} • ${a2}%`;
 
       const d1 = calcPack(count1, volume1, a1, p1);
       const d2 = calcPack(count2, volume2, a2, p2);
@@ -1076,10 +1209,9 @@
     }
 
     function renderResults(d1, d2, isPack) {
-      resetResults();
-
       drink1Std.textContent = d1.totalStd.toFixed(2);
       drink1StdPerItem.textContent = isPack ? d1.stdPerItem.toFixed(2) : '-';
+      drink1CostPerItem.textContent = isPack ? '$' + d1.costPerItem.toFixed(2) : '-';
       drink1CostStd.textContent = '$' + d1.costStd.toFixed(2);
       drink1CostLitre.textContent = '$' + d1.costL.toFixed(2);
       drink1Mass.textContent = d1.totalGrams.toFixed(2) + ' g';
@@ -1087,6 +1219,7 @@
 
       drink2Std.textContent = d2.totalStd.toFixed(2);
       drink2StdPerItem.textContent = isPack ? d2.stdPerItem.toFixed(2) : '-';
+      drink2CostPerItem.textContent = isPack ? '$' + d2.costPerItem.toFixed(2) : '-';
       drink2CostStd.textContent = '$' + d2.costStd.toFixed(2);
       drink2CostLitre.textContent = '$' + d2.costL.toFixed(2);
       drink2Mass.textContent = d2.totalGrams.toFixed(2) + ' g';
@@ -1141,6 +1274,21 @@
     document.querySelectorAll('.size-chip').forEach(btn => {
       btn.addEventListener('click', () => {
         setSelectedSize(btn.dataset.drink, btn.dataset.size);
+      });
+    });
+
+    document.querySelectorAll('.quick-picks').forEach(group => {
+      group.addEventListener('click', (event) => {
+        const btn = event.target.closest('.quick-pick');
+        if (!btn) return;
+
+        const targetId = group.dataset.target;
+        const target = document.getElementById(targetId);
+        if (!target) return;
+
+        target.value = btn.dataset.value;
+        target.dispatchEvent(new Event('input', { bubbles: true }));
+        target.focus();
       });
     });
 
