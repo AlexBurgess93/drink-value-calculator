@@ -79,10 +79,50 @@
     }
 
     p.lead{
-      margin:0 0 24px;
+      margin:0 0 18px;
       color:var(--muted);
       font-size:13px;
       line-height:1.25;
+    }
+
+    .mode-tabs{
+      display:flex;
+      gap:10px;
+      margin:0 0 22px;
+      flex-wrap:wrap;
+    }
+
+    .mode-tab{
+      appearance:none;
+      border:1px solid var(--chip-border);
+      background:var(--chip-bg);
+      color:var(--ink);
+      border-radius:14px;
+      padding:10px 14px;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.08s ease;
+    }
+
+    .mode-tab:hover{
+      border-color:var(--accent);
+      background:#f4fffd;
+    }
+
+    .mode-tab:active{
+      transform:scale(.98);
+    }
+
+    .mode-tab.active{
+      border-color:var(--accent);
+      background:var(--chip-active-bg);
+      color:var(--accent);
+      box-shadow:0 0 0 2px rgba(15,118,110,0.12);
     }
 
     .grid{
@@ -163,13 +203,17 @@
       background:#e0f7f5;
       box-shadow:0 0 0 2px rgba(15,118,110,0.12);
     }
-    
-    .custom-volume{
+
+    .custom-volume,
+    .single-only,
+    .pack-only{
       display:none;
       margin-bottom:4px;
     }
 
-    .custom-volume.show{
+    .custom-volume.show,
+    .single-only.show,
+    .pack-only.show{
       display:block;
     }
 
@@ -177,6 +221,10 @@
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:12px;
+    }
+
+    .field-group{
+      min-width:0;
     }
 
     input{
@@ -215,6 +263,13 @@
 
     .price-input.focused-placeholder{
       color:var(--ink);
+    }
+
+    .helper{
+      margin-top:6px;
+      font-size:11px;
+      color:var(--muted);
+      line-height:1.3;
     }
 
     .actions{
@@ -485,7 +540,8 @@
         padding:10px;
       }
 
-      .size-chip{
+      .size-chip,
+      .mode-tab{
         flex:1 1 calc(50% - 6px);
         text-align:center;
       }
@@ -504,26 +560,48 @@
 
   <div class="wrap">
     <h1>Drink Value Calculator</h1>
-    <p class="lead">If you're a cheap bastard and want the best bang for your buck, enter the stats for 2 drinks and see which one gets better value for money.</p>
+    <p class="lead">If you're a cheap bastard and want the best bang for your buck, compare two single drinks or two packs and see which one gives better value.</p>
+
+    <div class="mode-tabs" role="tablist" aria-label="Comparison mode">
+      <button class="mode-tab active" id="modeSingleBtn" type="button" data-mode="single" aria-selected="true">Single drinks</button>
+      <button class="mode-tab" id="modePackBtn" type="button" data-mode="pack" aria-selected="false">Packs</button>
+    </div>
 
     <div class="grid">
 
       <div class="card">
-        <h2>Drink 1</h2>
+        <h2 id="cardTitle1">Drink 1</h2>
 
-        <label class="size-label">Size</label>
-        <div class="size-options" data-drink="1">
-          <button class="size-chip" type="button" data-drink="1" data-size="pint">Pint</button>
-          <button class="size-chip" type="button" data-drink="1" data-size="schooner">Schooner</button>
-          <button class="size-chip" type="button" data-drink="1" data-size="middy">Middy</button>
-          <button class="size-chip" type="button" data-drink="1" data-size="custom">Custom</button>
+        <div class="single-only show" id="singleFields1">
+          <label class="size-label">Size</label>
+          <div class="size-options" data-drink="1">
+            <button class="size-chip" type="button" data-drink="1" data-size="pint">Pint</button>
+            <button class="size-chip" type="button" data-drink="1" data-size="schooner">Schooner</button>
+            <button class="size-chip" type="button" data-drink="1" data-size="middy">Middy</button>
+            <button class="size-chip" type="button" data-drink="1" data-size="custom">Custom</button>
+          </div>
+
+          <div class="custom-volume" id="customVolumeWrap1">
+            <div class="field-group">
+              <label for="volume1">Custom volume (mL)</label>
+              <input id="volume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+            </div>
+          </div>
         </div>
 
-        <div class="custom-volume" id="customVolumeWrap1">
-          <div class="field-group">
-            <label for="volume1">Custom volume (ml)</label>
-            <input id="volume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+        <div class="pack-only" id="packFields1">
+          <div class="field-row">
+            <div class="field-group">
+              <label for="count1">Items in pack</label>
+              <input id="count1" type="number" inputmode="numeric" enterkeyhint="next" step="1">
+            </div>
+
+            <div class="field-group">
+              <label for="packVolume1">Volume per item (mL)</label>
+              <input id="packVolume1" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+            </div>
           </div>
+          <div class="helper">Needed so the calculator can work out total standard drinks, alcohol mass, BAC estimate, and cost per litre correctly.</div>
         </div>
 
         <div class="field-row">
@@ -533,28 +611,45 @@
           </div>
 
           <div class="field-group">
-            <label for="price1">Price ($)</label>
+            <label id="priceLabel1" for="price1">Price ($)</label>
             <input id="price1" class="price-input" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" placeholder="$0.00">
           </div>
         </div>
       </div>
 
       <div class="card">
-        <h2>Drink 2</h2>
+        <h2 id="cardTitle2">Drink 2</h2>
 
-        <label class="size-label">Size</label>
-        <div class="size-options" data-drink="2">
-          <button class="size-chip" type="button" data-drink="2" data-size="pint">Pint</button>
-          <button class="size-chip" type="button" data-drink="2" data-size="schooner">Schooner</button>
-          <button class="size-chip" type="button" data-drink="2" data-size="middy">Middy</button>
-          <button class="size-chip" type="button" data-drink="2" data-size="custom">Custom</button>
+        <div class="single-only show" id="singleFields2">
+          <label class="size-label">Size</label>
+          <div class="size-options" data-drink="2">
+            <button class="size-chip" type="button" data-drink="2" data-size="pint">Pint</button>
+            <button class="size-chip" type="button" data-drink="2" data-size="schooner">Schooner</button>
+            <button class="size-chip" type="button" data-drink="2" data-size="middy">Middy</button>
+            <button class="size-chip" type="button" data-drink="2" data-size="custom">Custom</button>
+          </div>
+
+          <div class="custom-volume" id="customVolumeWrap2">
+            <div class="field-group">
+              <label for="volume2">Custom volume (mL)</label>
+              <input id="volume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+            </div>
+          </div>
         </div>
 
-        <div class="custom-volume" id="customVolumeWrap2">
-          <div class="field-group">
-            <label for="volume2">Custom volume (ml)</label>
-            <input id="volume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+        <div class="pack-only" id="packFields2">
+          <div class="field-row">
+            <div class="field-group">
+              <label for="count2">Items in pack</label>
+              <input id="count2" type="number" inputmode="numeric" enterkeyhint="next" step="1">
+            </div>
+
+            <div class="field-group">
+              <label for="packVolume2">Volume per item (mL)</label>
+              <input id="packVolume2" type="number" inputmode="decimal" enterkeyhint="next" step="0.1">
+            </div>
           </div>
+          <div class="helper">Needed so the calculator can work out total standard drinks, alcohol mass, BAC estimate, and cost per litre correctly.</div>
         </div>
 
         <div class="field-row">
@@ -564,7 +659,7 @@
           </div>
 
           <div class="field-group">
-            <label for="price2">Price ($)</label>
+            <label id="priceLabel2" for="price2">Price ($)</label>
             <input id="price2" class="price-input" type="text" inputmode="numeric" enterkeyhint="done" autocomplete="off" placeholder="$0.00">
           </div>
         </div>
@@ -585,7 +680,7 @@
       <div class="stats">
 
         <div class="stat" id="stat1">
-          <strong>Drink 1 <span class="trophy" aria-hidden="true">🏆</span></strong>
+          <strong id="statTitle1">Drink 1 <span class="trophy" aria-hidden="true">🏆</span></strong>
           <div class="drink-meta" id="drink1Meta"></div>
           <div class="stat-divider"></div>
 
@@ -595,8 +690,13 @@
           </div>
 
           <div class="result-row">
-            <span class="result-label">Standard drinks</span>
+            <span class="result-label" id="drink1StdLabel">Standard drinks</span>
             <span class="result-value" id="drink1Std">-</span>
+          </div>
+
+          <div class="result-row pack-metric">
+            <span class="result-label" id="drink1StdPerItemLabel">Standard drinks per item</span>
+            <span class="result-value" id="drink1StdPerItem">-</span>
           </div>
 
           <div class="result-row">
@@ -610,13 +710,13 @@
           </div>
 
           <div class="result-row">
-            <span class="result-label">Drinks to ~0.05 BAC</span>
+            <span class="result-label" id="drink1ToLimitLabel">Drinks to ~0.05 BAC</span>
             <span class="result-value" id="drink1ToLimit">-</span>
           </div>
         </div>
 
         <div class="stat" id="stat2">
-          <strong>Drink 2 <span class="trophy" aria-hidden="true">🏆</span></strong>
+          <strong id="statTitle2">Drink 2 <span class="trophy" aria-hidden="true">🏆</span></strong>
           <div class="drink-meta" id="drink2Meta"></div>
           <div class="stat-divider"></div>
 
@@ -626,8 +726,13 @@
           </div>
 
           <div class="result-row">
-            <span class="result-label">Standard drinks</span>
+            <span class="result-label" id="drink2StdLabel">Standard drinks</span>
             <span class="result-value" id="drink2Std">-</span>
+          </div>
+
+          <div class="result-row pack-metric">
+            <span class="result-label" id="drink2StdPerItemLabel">Standard drinks per item</span>
+            <span class="result-value" id="drink2StdPerItem">-</span>
           </div>
 
           <div class="result-row">
@@ -641,24 +746,25 @@
           </div>
 
           <div class="result-row">
-            <span class="result-label">Drinks to ~0.05 BAC</span>
+            <span class="result-label" id="drink2ToLimitLabel">Drinks to ~0.05 BAC</span>
             <span class="result-value" id="drink2ToLimit">-</span>
           </div>
         </div>
 
       </div>
 
-      <div class="formula">
+      <div class="formula" id="formulaBox">
         <div><strong>Formulas:</strong></div>
         <div>Grams of alcohol = Volume × (Alcohol % ÷ 100) × 0.789</div>
         <div>Standard drinks = Grams of alcohol ÷ 10</div>
         <div>Cost per standard drink = Price ÷ Standard drinks</div>
         <div>Cost per litre = Price ÷ (Volume ÷ 1000)</div>
+        <div id="packFormulaLine">For packs: Total volume = Item count × Volume per item</div>
       </div>
 
       <div class="disclaimer">
         <div><strong>Disclaimer:</strong></div>
-        Drinks to ~0.05 BAC is a rough estimate only, based on ~2.5 standard drinks.
+        Drinks/items to ~0.05 BAC is a rough estimate only, based on ~2.5 standard drinks.
         Real BAC depends on body size, sex, food, time, and metabolism.
         Needless to say, if you rely on this to decide if driving is a good idea, you're an 1D10T m8.
       </div>
@@ -672,6 +778,7 @@
 
   <script>
     const LIMIT = 2.5;
+    let currentMode = 'single';
 
     const SIZE_MAP = {
       pint: { label: 'Pint', volume: 570 },
@@ -684,9 +791,14 @@
       volume1: document.getElementById('volume1'),
       abv1: document.getElementById('abv1'),
       price1: document.getElementById('price1'),
+      count1: document.getElementById('count1'),
+      packVolume1: document.getElementById('packVolume1'),
+
       volume2: document.getElementById('volume2'),
       abv2: document.getElementById('abv2'),
-      price2: document.getElementById('price2')
+      price2: document.getElementById('price2'),
+      count2: document.getElementById('count2'),
+      packVolume2: document.getElementById('packVolume2')
     };
 
     const selectedSizes = {
@@ -708,12 +820,14 @@
     const drink2Meta = document.getElementById('drink2Meta');
 
     const drink1Std = document.getElementById('drink1Std');
+    const drink1StdPerItem = document.getElementById('drink1StdPerItem');
     const drink1CostStd = document.getElementById('drink1CostStd');
     const drink1CostLitre = document.getElementById('drink1CostLitre');
     const drink1Mass = document.getElementById('drink1Mass');
     const drink1ToLimit = document.getElementById('drink1ToLimit');
 
     const drink2Std = document.getElementById('drink2Std');
+    const drink2StdPerItem = document.getElementById('drink2StdPerItem');
     const drink2CostStd = document.getElementById('drink2CostStd');
     const drink2CostLitre = document.getElementById('drink2CostLitre');
     const drink2Mass = document.getElementById('drink2Mass');
@@ -722,16 +836,55 @@
     const customVolumeWrap1 = document.getElementById('customVolumeWrap1');
     const customVolumeWrap2 = document.getElementById('customVolumeWrap2');
 
-    function calc(v, a, p) {
-      const grams = v * (a / 100) * 0.789;
+    const singleFields1 = document.getElementById('singleFields1');
+    const singleFields2 = document.getElementById('singleFields2');
+    const packFields1 = document.getElementById('packFields1');
+    const packFields2 = document.getElementById('packFields2');
+
+    const modeSingleBtn = document.getElementById('modeSingleBtn');
+    const modePackBtn = document.getElementById('modePackBtn');
+
+    const cardTitle1 = document.getElementById('cardTitle1');
+    const cardTitle2 = document.getElementById('cardTitle2');
+    const statTitle1 = document.getElementById('statTitle1');
+    const statTitle2 = document.getElementById('statTitle2');
+    const priceLabel1 = document.getElementById('priceLabel1');
+    const priceLabel2 = document.getElementById('priceLabel2');
+    const drink1StdLabel = document.getElementById('drink1StdLabel');
+    const drink2StdLabel = document.getElementById('drink2StdLabel');
+    const drink1ToLimitLabel = document.getElementById('drink1ToLimitLabel');
+    const drink2ToLimitLabel = document.getElementById('drink2ToLimitLabel');
+
+    function calcSingle(volumeMl, abv, price) {
+      const grams = volumeMl * (abv / 100) * 0.789;
       const std = grams / 10;
 
       return {
-        grams,
-        std,
-        costStd: p / std,
-        costL: p / (v / 1000),
-        limit: LIMIT / std
+        totalVolumeMl: volumeMl,
+        totalGrams: grams,
+        totalStd: std,
+        stdPerItem: std,
+        costStd: price / std,
+        costL: price / (volumeMl / 1000),
+        itemsToLimit: LIMIT / std
+      };
+    }
+
+    function calcPack(itemCount, volumePerItemMl, abv, price) {
+      const totalVolumeMl = itemCount * volumePerItemMl;
+      const gramsPerItem = volumePerItemMl * (abv / 100) * 0.789;
+      const totalGrams = totalVolumeMl * (abv / 100) * 0.789;
+      const stdPerItem = gramsPerItem / 10;
+      const totalStd = totalGrams / 10;
+
+      return {
+        totalVolumeMl,
+        totalGrams,
+        totalStd,
+        stdPerItem,
+        costStd: price / totalStd,
+        costL: price / (totalVolumeMl / 1000),
+        itemsToLimit: LIMIT / stdPerItem
       };
     }
 
@@ -789,10 +942,10 @@
       }
     }
 
-    function getVolume(drink) {
+    function getSingleVolume(drink) {
       const sizeKey = selectedSizes[drink];
-
       if (!sizeKey) return NaN;
+
       if (sizeKey === 'custom') {
         return Number(drink === '1' ? fields.volume1.value : fields.volume2.value);
       }
@@ -811,38 +964,70 @@
       drink2Meta.innerHTML = '';
 
       drink1Std.textContent = '-';
+      drink1StdPerItem.textContent = '-';
       drink1CostStd.textContent = '-';
       drink1CostLitre.textContent = '-';
       drink1Mass.textContent = '-';
       drink1ToLimit.textContent = '-';
 
       drink2Std.textContent = '-';
+      drink2StdPerItem.textContent = '-';
       drink2CostStd.textContent = '-';
       drink2CostLitre.textContent = '-';
       drink2Mass.textContent = '-';
       drink2ToLimit.textContent = '-';
     }
 
-    function compare() {
-      resetResults();
+    function setMode(mode) {
+      currentMode = mode;
 
-      const v1 = getVolume('1');
+      const isSingle = mode === 'single';
+
+      modeSingleBtn.classList.toggle('active', isSingle);
+      modePackBtn.classList.toggle('active', !isSingle);
+      modeSingleBtn.setAttribute('aria-selected', String(isSingle));
+      modePackBtn.setAttribute('aria-selected', String(!isSingle));
+
+      singleFields1.classList.toggle('show', isSingle);
+      singleFields2.classList.toggle('show', isSingle);
+      packFields1.classList.toggle('show', !isSingle);
+      packFields2.classList.toggle('show', !isSingle);
+
+      cardTitle1.textContent = isSingle ? 'Drink 1' : 'Pack 1';
+      cardTitle2.textContent = isSingle ? 'Drink 2' : 'Pack 2';
+
+      statTitle1.innerHTML = `${isSingle ? 'Drink 1' : 'Pack 1'} <span class="trophy" aria-hidden="true">🏆</span>`;
+      statTitle2.innerHTML = `${isSingle ? 'Drink 2' : 'Pack 2'} <span class="trophy" aria-hidden="true">🏆</span>`;
+
+      priceLabel1.textContent = isSingle ? 'Price ($)' : 'Pack price ($)';
+      priceLabel2.textContent = isSingle ? 'Price ($)' : 'Pack price ($)';
+
+      drink1StdLabel.textContent = isSingle ? 'Standard drinks' : 'Total standard drinks';
+      drink2StdLabel.textContent = isSingle ? 'Standard drinks' : 'Total standard drinks';
+
+      drink1ToLimitLabel.textContent = isSingle ? 'Drinks to ~0.05 BAC' : 'Items to ~0.05 BAC';
+      drink2ToLimitLabel.textContent = isSingle ? 'Drinks to ~0.05 BAC' : 'Items to ~0.05 BAC';
+
+      summary.textContent = isSingle ? 'Compare two drinks' : 'Compare two packs';
+      resetResults();
+    }
+
+    function validatePositiveNumbers(values) {
+      return values.every(v => Number.isFinite(v) && v > 0);
+    }
+
+    function compareSingle() {
+      const v1 = getSingleVolume('1');
       const a1 = Number(fields.abv1.value);
       const p1 = getPriceValue(fields.price1);
 
-      const v2 = getVolume('2');
+      const v2 = getSingleVolume('2');
       const a2 = Number(fields.abv2.value);
       const p2 = getPriceValue(fields.price2);
 
-      if (!selectedSizes[1] || !selectedSizes[2] || !v1 || !a1 || !p1 || !v2 || !a2 || !p2) {
+      if (!selectedSizes[1] || !selectedSizes[2] || !validatePositiveNumbers([v1, a1, p1, v2, a2, p2])) {
         summary.textContent = 'Enter all values';
-        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        return;
-      }
-
-      if ([v1, a1, p1, v2, a2, p2].some(v => Number.isNaN(v) || v < 0) || v1 <= 0 || v2 <= 0 || p1 <= 0 || p2 <= 0) {
-        summary.textContent = 'Fix the inputs';
-        warning.textContent = 'Volume and alcohol % cannot be negative. Volume and price must be above 0.';
+        warning.textContent = 'Choose a size for each drink and enter valid volume, alcohol %, and price values above 0.';
         resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
@@ -850,27 +1035,69 @@
       drink1Meta.innerHTML = `${v1}mL • ${a1}% • ${formatInputPrice(p1)}`;
       drink2Meta.innerHTML = `${v2}mL • ${a2}% • ${formatInputPrice(p2)}`;
 
-      const d1 = calc(v1, a1, p1);
-      const d2 = calc(v2, a2, p2);
+      const d1 = calcSingle(v1, a1, p1);
+      const d2 = calcSingle(v2, a2, p2);
 
-      drink1Std.textContent = d1.std.toFixed(2);
+      renderResults(d1, d2, false);
+    }
+
+    function comparePack() {
+      const count1 = Number(fields.count1.value);
+      const volume1 = Number(fields.packVolume1.value);
+      const a1 = Number(fields.abv1.value);
+      const p1 = getPriceValue(fields.price1);
+
+      const count2 = Number(fields.count2.value);
+      const volume2 = Number(fields.packVolume2.value);
+      const a2 = Number(fields.abv2.value);
+      const p2 = getPriceValue(fields.price2);
+
+      if (!validatePositiveNumbers([count1, volume1, a1, p1, count2, volume2, a2, p2])) {
+        summary.textContent = 'Enter all values';
+        warning.textContent = 'For pack mode, enter items in pack, volume per item, alcohol %, and pack price for both options. All values must be above 0.';
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      if (!Number.isInteger(count1) || !Number.isInteger(count2)) {
+        summary.textContent = 'Fix the inputs';
+        warning.textContent = 'Items in pack must be whole numbers.';
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+
+      drink1Meta.innerHTML = `${count1} × ${volume1}mL • ${a1}% • ${formatInputPrice(p1)}`;
+      drink2Meta.innerHTML = `${count2} × ${volume2}mL • ${a2}% • ${formatInputPrice(p2)}`;
+
+      const d1 = calcPack(count1, volume1, a1, p1);
+      const d2 = calcPack(count2, volume2, a2, p2);
+
+      renderResults(d1, d2, true);
+    }
+
+    function renderResults(d1, d2, isPack) {
+      resetResults();
+
+      drink1Std.textContent = d1.totalStd.toFixed(2);
+      drink1StdPerItem.textContent = isPack ? d1.stdPerItem.toFixed(2) : '-';
       drink1CostStd.textContent = '$' + d1.costStd.toFixed(2);
       drink1CostLitre.textContent = '$' + d1.costL.toFixed(2);
-      drink1Mass.textContent = d1.grams.toFixed(2) + ' g';
-      drink1ToLimit.textContent = d1.limit.toFixed(2);
+      drink1Mass.textContent = d1.totalGrams.toFixed(2) + ' g';
+      drink1ToLimit.textContent = d1.itemsToLimit.toFixed(2);
 
-      drink2Std.textContent = d2.std.toFixed(2);
+      drink2Std.textContent = d2.totalStd.toFixed(2);
+      drink2StdPerItem.textContent = isPack ? d2.stdPerItem.toFixed(2) : '-';
       drink2CostStd.textContent = '$' + d2.costStd.toFixed(2);
       drink2CostLitre.textContent = '$' + d2.costL.toFixed(2);
-      drink2Mass.textContent = d2.grams.toFixed(2) + ' g';
-      drink2ToLimit.textContent = d2.limit.toFixed(2);
+      drink2Mass.textContent = d2.totalGrams.toFixed(2) + ' g';
+      drink2ToLimit.textContent = d2.itemsToLimit.toFixed(2);
 
       if (d1.costStd < d2.costStd) {
-        summary.textContent = 'Drink 1 wins 🏆';
+        summary.textContent = `${isPack ? 'Pack 1' : 'Drink 1'} wins 🏆`;
         stat1.classList.add('win');
         costRow1.classList.add('win-metric');
       } else if (d2.costStd < d1.costStd) {
-        summary.textContent = 'Drink 2 wins 🏆';
+        summary.textContent = `${isPack ? 'Pack 2' : 'Drink 2'} wins 🏆`;
         stat2.classList.add('win');
         costRow2.classList.add('win-metric');
       } else {
@@ -878,6 +1105,14 @@
       }
 
       resultBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function compare() {
+      if (currentMode === 'single') {
+        compareSingle();
+      } else {
+        comparePack();
+      }
     }
 
     function resetAll() {
@@ -899,7 +1134,7 @@
       customVolumeWrap2.classList.remove('show');
 
       resetResults();
-      summary.textContent = 'Compare two drinks';
+      setMode(currentMode);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -942,8 +1177,13 @@
       });
     });
 
+    modeSingleBtn.addEventListener('click', () => setMode('single'));
+    modePackBtn.addEventListener('click', () => setMode('pack'));
+
     document.getElementById('compareBtn').addEventListener('click', compare);
     document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+    setMode('single');
   </script>
 
 </body>
